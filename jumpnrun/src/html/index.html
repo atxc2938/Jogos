@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jump N Run</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- CENARIO DE FUNDO -->
+        <div id="terceiro-plano"></div>
+        <div id="sol"></div>
+        <div id="segundo-plano"></div>
+        <div id="segundo-plano-2"></div>
+        <div id="solo"></div>
+        
+        <!-- ELEMENTOS -->
+        <div id="particles-container"></div>
+        <div id="obstaculos-container"></div>
+        <div id="personagem"></div>
+        
+        <!-- CONTADOR DE ITENS -->
+        <div id="contador-itens-container">
+            <div id="icone-moeda"></div>
+            <div id="contador-itens">0</div>
+        </div>
+        
+        <!-- MOEDA -->
+        <div id="itens-coletaveis-container"></div>
+        
+        <!-- MENU PRINCIPAL -->
+        <div id="menu-principal">
+            <div class="menu-item" id="skin-button">
+                <img src="../assets/images/menu/Skin.png" alt="Skin">
+            </div>
+            <div class="menu-item" id="play-button">
+                <img src="../assets/images/menu/Play.png" alt="Play">
+            </div>
+            <div class="menu-item" id="config-button">
+                <img src="../assets/images/menu/Configurações.png" alt="Configurações">
+            </div>
+        </div>
+
+        <!-- MENU DE DIFICULDADE -->
+        <div id="menu-dificuldade">
+            <div class="home-button" id="home-button">
+                <img src="../assets/images/menu/home.png" alt="Home">
+            </div>
+            <div class="dificuldade-container">
+                <div class="dificuldade-item" id="facil-button">
+                    <img src="../assets/images/fases/facil.png" alt="Fácil">
+                    <div class="selecao-overlay"></div>
+                </div>
+                <div class="dificuldade-item" id="medio-button">
+                    <img src="../assets/images/fases/medio.png" alt="Médio">
+                    <div class="selecao-overlay"></div>
+                </div>
+                <div class="dificuldade-item" id="dificil-button">
+                    <img src="../assets/images/fases/dificil.png" alt="Difícil">
+                    <div class="selecao-overlay"></div>
+                </div>
+                <div class="dificuldade-item" id="tutorial-button">
+                    <img src="../assets/images/fases/tutorial.png" alt="Tutorial">
+                    <div class="selecao-overlay"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MENU DE SKIN -->
+        <div id="menu-skin">
+            <div id="container-skin">
+                <div id="titulo-skin">LOJA DE SKINS</div>
+                <div id="contador-moedas-total">
+                    <div id="icone-moeda-total"></div>
+                    <span>0</span>
+                </div>
+                <div id="grid-skins">
+                </div>
+                <div id="botoes-skin">
+                    <div class="botao-skin" id="botao-voltar-skin">Voltar</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="pause-button" id="pause-button">
+            <img src="../assets/images/clicáveis/Pause.png" alt="Pause">
+        </div>
+        
+        <!-- MENU DE PAUSE -->
+        <div id="menu-pause">
+            <div id="imagem-pause"></div>
+            <div id="botoes-pause">
+                <div class="botao-pause" id="botao-desistir"></div>
+                <div class="botao-pause" id="botao-despausar"></div>
+            </div>
+        </div>
+        
+        <!-- TELA DE GAME OVER -->
+        <div id="tela-game-over">
+            <div id="imagem-game-over"></div>
+            <div id="botao-continuar"></div>
+        </div>
+                <!-- CONFIGURAÇÕES -->
+        <div id="menu-configuracoes">
+            <div id="container-configuracoes">
+                <div id="titulo-configuracoes">CONFIGURAÇÕES</div>
+                <div id="botoes-configuracoes">
+                    <button class="botao-config info" id="botao-add-moedas-config">+10 Moedas (Debug)</button>
+                    <button class="botao-config perigo" id="botao-reset-moedas-config">Resetar Moedas</button>
+                    <button class="botao-config perigo" id="botao-reset-skins-config">Resetar Skins</button>
+                    <button class="botao-config perigo" id="botao-reset-tudo-config">RESETAR TUDO</button>
+                </div>
+                <div id="botoes-config">
+                    <div class="botao-skin" id="botao-voltar-config">Voltar</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../js/Cenario.js"></script>
+    <script src="../js/Particula.js"></script>
+    <script src="../js/PersonagemController.js"></script>
+    <script src="../js/FisicaPlataforma.js"></script>
+    <script src="../js/ValidadorPulos.js"></script>
+    <script src="../js/GeradorObstaculos.js"></script>
+    <script src="../js/ObstaculoController.js"></script>
+    <script src="../js/PauseController.js"></script>
+    <script src="../js/ResolutionController.js"></script>
+    <script src="../js/GameOverController.js"></script>
+    <script src="../js/MoedaManager.js"></script>
+    <script src="../js/SkinManager.js"></script>
+    <script src="../js/ConfiguracaoController.js"></script> <!-- ADICIONAR ESTA LINHA -->
+    <script src="../js/ItemColetavelController.js"></script>
+    <script src="../js/MenuController.js"></script>
+    <script src="../js/game.js"></script>
+</body>
+</html>
