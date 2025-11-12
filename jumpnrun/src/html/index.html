@@ -8,28 +8,27 @@
 </head>
 <body>
     <div id="game-container">
-        <!-- CENARIO DE FUNDO -->
         <div id="terceiro-plano"></div>
         <div id="sol"></div>
         <div id="segundo-plano"></div>
         <div id="segundo-plano-2"></div>
         <div id="solo"></div>
         
-        <!-- ELEMENTOS -->
         <div id="particles-container"></div>
         <div id="obstaculos-container"></div>
         <div id="personagem"></div>
         
-        <!-- CONTADOR DE ITENS -->
+        <div id="timer-container">
+            <div id="timer">01:00</div>
+        </div>
+        
         <div id="contador-itens-container">
             <div id="icone-moeda"></div>
             <div id="contador-itens">0</div>
         </div>
         
-        <!-- MOEDA -->
         <div id="itens-coletaveis-container"></div>
         
-        <!-- MENU PRINCIPAL -->
         <div id="menu-principal">
             <div class="menu-item" id="skin-button">
                 <img src="../assets/images/menu/Skin.png" alt="Skin">
@@ -42,7 +41,6 @@
             </div>
         </div>
 
-        <!-- MENU DE DIFICULDADE -->
         <div id="menu-dificuldade">
             <div class="home-button" id="home-button">
                 <img src="../assets/images/menu/home.png" alt="Home">
@@ -67,7 +65,6 @@
             </div>
         </div>
 
-        <!-- MENU DE SKIN -->
         <div id="menu-skin">
             <div id="container-skin">
                 <div id="titulo-skin">LOJA DE SKINS</div>
@@ -87,7 +84,6 @@
             <img src="../assets/images/clicáveis/Pause.png" alt="Pause">
         </div>
         
-        <!-- MENU DE PAUSE -->
         <div id="menu-pause">
             <div id="imagem-pause"></div>
             <div id="botoes-pause">
@@ -96,12 +92,11 @@
             </div>
         </div>
         
-        <!-- TELA DE GAME OVER -->
         <div id="tela-game-over">
             <div id="imagem-game-over"></div>
             <div id="botao-continuar"></div>
         </div>
-                <!-- CONFIGURAÇÕES -->
+        
         <div id="menu-configuracoes">
             <div id="container-configuracoes">
                 <div id="titulo-configuracoes">CONFIGURAÇÕES</div>
@@ -130,9 +125,10 @@
     <script src="../js/GameOverController.js"></script>
     <script src="../js/MoedaManager.js"></script>
     <script src="../js/SkinManager.js"></script>
-    <script src="../js/ConfiguracaoController.js"></script> <!-- ADICIONAR ESTA LINHA -->
+    <script src="../js/ConfiguracaoController.js"></script>
     <script src="../js/ItemColetavelController.js"></script>
     <script src="../js/MenuController.js"></script>
+    <script src="../js/TimerController.js"></script>
     <script src="../js/game.js"></script>
 </body>
 </html>

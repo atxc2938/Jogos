@@ -44,6 +44,11 @@ class GameOverController {
                 window.jogo.personagemController.pararControles();
             }
             
+            // Parar timer
+            if (window.jogo.timerController) {
+                window.jogo.timerController.pararTimer();
+            }
+            
             window.jogo.jogoIniciado = false;
         }
     }

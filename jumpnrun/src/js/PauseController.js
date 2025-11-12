@@ -41,7 +41,7 @@ class PauseController {
     pausarJogo() {
         this.jogoPausado = true;
         
-   
+        // Pausar cenários
         if (window.jogo && window.jogo.cenario1) {
             window.jogo.cenario1.pausar();
         }
@@ -49,32 +49,38 @@ class PauseController {
             window.jogo.cenario2.pausar();
         }
 
- 
+        // Pausar partículas
         if (window.jogo && window.jogo.personagemController) {
             window.jogo.personagemController.particula.stop();
         }
 
-
+        // Pausar obstáculos
         if (window.jogo && window.jogo.obstaculoController) {
             window.jogo.obstaculoController.pausar();
         }
 
-      
+        // Pausar aumento de velocidade
         if (window.jogo) {
             window.jogo.pararAumentoVelocidade();
         }
 
+        // Pausar animação do personagem
         if (window.jogo && window.jogo.personagemController) {
             this.pararAnimacaoPersonagem();
         }
 
+        // Pausar timer (já é pausado automaticamente pela verificação no intervalo)
+        if (window.jogo && window.jogo.timerController) {
+            window.jogo.timerController.pausarTimer();
+        }
 
+        // Desativar controles
         this.desativarControles();
 
-     
+        // Esconder botão de pause
         this.pauseButton.style.display = 'none';
 
-     
+        // Mostrar menu de pause
         this.menuPause.style.display = 'flex';
         
         console.log('Jogo completamente pausado');
@@ -83,12 +89,13 @@ class PauseController {
     despausarJogo() {
         this.jogoPausado = false;
         
-      
+        // Esconder menu de pause
         this.menuPause.style.display = 'none';
 
-       
+        // Mostrar botão de pause
         this.mostrarBotao();
-      
+        
+        // Despausar cenários
         if (window.jogo && window.jogo.cenario1) {
             window.jogo.cenario1.despausar();
         }
@@ -96,23 +103,29 @@ class PauseController {
             window.jogo.cenario2.despausar();
         }
 
-    
+        // Despausar partículas
         if (window.jogo && window.jogo.personagemController) {
             window.jogo.personagemController.particula.start();
         }
 
-    
+        // Despausar obstáculos
         if (window.jogo && window.jogo.obstaculoController) {
             window.jogo.obstaculoController.despausar();
         }
 
+        // Retomar aumento de velocidade
         if (window.jogo && window.jogo.jogoIniciado) {
             window.jogo.iniciarAumentoVelocidade();
         }
 
-     
+        // Retomar animação do personagem
         if (window.jogo && window.jogo.personagemController) {
             this.retomarAnimacaoPersonagem();
+        }
+
+        // Despausar timer
+        if (window.jogo && window.jogo.timerController) {
+            window.jogo.timerController.despausarTimer();
         }
 
         this.reativarControles();
@@ -123,24 +136,24 @@ class PauseController {
     desistirDoJogo() {
         this.jogoPausado = false;
         
-  
+        // Esconder menu de pause
         this.menuPause.style.display = 'none';
 
-
+        // Esconder botão de pause
         this.pauseButton.style.display = 'none';
         this.pauseButton.style.opacity = '0';
 
-
+        // Parar tudo
         if (window.jogo) {
-
+            // Parar aumento de velocidade
             window.jogo.pararAumentoVelocidade();
             
-
+            // Parar obstáculos
             if (window.jogo.obstaculoController) {
                 window.jogo.obstaculoController.parar();
             }
             
-
+            // Resetar cenários
             if (window.jogo.cenario1) {
                 window.jogo.cenario1.setVelocidade(window.jogo.velocidadeMenu1);
                 window.jogo.cenario1.despausar();
@@ -150,12 +163,17 @@ class PauseController {
                 window.jogo.cenario2.despausar();
             }
             
-
+            // Limpar obstáculos
             if (window.jogo.obstaculoController) {
                 window.jogo.obstaculoController.limparObstaculos();
             }
             
-
+            // Parar timer
+            if (window.jogo.timerController) {
+                window.jogo.timerController.pararTimer();
+            }
+            
+            // Resetar personagem
             const personagem = document.getElementById('personagem');
             if (personagem) {
                 personagem.style.opacity = '0';
@@ -171,7 +189,7 @@ class PauseController {
             window.jogo.jogoIniciado = false;
         }
 
-
+        // Voltar ao menu principal
         if (window.jogo && window.jogo.menuController) {
             window.jogo.menuController.mostrarMenu();
         }
@@ -182,7 +200,7 @@ class PauseController {
     pararAnimacaoPersonagem() {
         const personagemController = window.jogo.personagemController;
         
-
+        // Salvar estado atual do personagem
         this.estadoPersonagem = {
             bottom: personagemController.personagem.style.bottom,
             transform: personagemController.personagem.style.transform,
@@ -192,7 +210,7 @@ class PauseController {
             rotacao: personagemController.rotacao
         };
 
-
+        // Parar loop de animação
         if (personagemController.animacaoId) {
             cancelAnimationFrame(personagemController.animacaoId);
             personagemController.animacaoId = null;
@@ -202,7 +220,7 @@ class PauseController {
     retomarAnimacaoPersonagem() {
         const personagemController = window.jogo.personagemController;
         
-
+        // Restaurar estado do personagem
         if (this.estadoPersonagem) {
             personagemController.personagem.style.bottom = this.estadoPersonagem.bottom;
             personagemController.personagem.style.transform = this.estadoPersonagem.transform;
@@ -212,24 +230,26 @@ class PauseController {
             personagemController.rotacao = this.estadoPersonagem.rotacao;
         }
 
+        // Retomar loop de animação
         if (!personagemController.animacaoId) {
             personagemController.iniciarLoopAnimacao();
         }
     }
 
     desativarControles() {
-
+        // Salvar controles originais
         this.controlesOriginais = {
             keydown: document.onkeydown,
             touchstart: document.ontouchstart
         };
 
+        // Desativar controles
         document.onkeydown = null;
         document.ontouchstart = null;
     }
 
     reativarControles() {
-
+        // Restaurar controles originais
         if (this.controlesOriginais) {
             document.onkeydown = this.controlesOriginais.keydown;
             document.ontouchstart = this.controlesOriginais.touchstart;

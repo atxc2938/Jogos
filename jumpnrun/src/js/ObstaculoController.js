@@ -70,7 +70,7 @@ class ObstaculoController {
             case 'medio':
                 delayInicial = 800;
                 break;
-                case 'dificil':
+            case 'dificil':
                 delayInicial = 600;
                 break;
             default:

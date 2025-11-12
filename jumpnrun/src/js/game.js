@@ -13,6 +13,7 @@ class Jogo {
         this.menuController = new MenuController();
         this.gameOverController = new GameOverController();
         this.configuracaoController = new ConfiguracaoController();
+        this.timerController = new TimerController();
         this.jogoIniciado = false;
         this.dificuldadeAtual = null;
         this.tempoInicio = null;
@@ -60,7 +61,6 @@ class Jogo {
         this.dificuldadeAtual = dificuldade;
         this.tempoInicio = Date.now();
         
-        // Mostrar personagem
         this.personagem.style.opacity = '1';
         this.personagem.style.left = '250px';
         
@@ -74,6 +74,8 @@ class Jogo {
         
         this.iniciarAumentoVelocidade();
         this.personagemController.iniciarControles();
+        
+        this.timerController.iniciarTimer();
     }
 
     configurarDificuldade(dificuldade) {
@@ -107,11 +109,11 @@ class Jogo {
         this.jogoIniciado = false;
         this.dificuldadeAtual = null;
         
-        // Resetar cenários
         this.cenario1.setVelocidade(this.velocidadeMenu1);
         this.cenario2.setVelocidade(this.velocidadeMenu2);
         
-        // Mostrar menu principal
+        this.timerController.pararTimer();
+        
         this.menuController.mostrarMenu();
     }
 
@@ -125,7 +127,6 @@ class Jogo {
             this.cenario1.setVelocidadeSuave(novaVelocidade1, 1000);
             this.cenario2.setVelocidadeSuave(novaVelocidade2, 1000);
             
-            // Atualizar velocidade dos obstáculos também
             this.obstaculoController.atualizarVelocidade(novaVelocidade2);
             
             console.log(`Velocidades aumentadas: ${novaVelocidade1.toFixed(2)} / ${novaVelocidade2.toFixed(2)}`);
@@ -142,4 +143,5 @@ class Jogo {
 
 document.addEventListener('DOMContentLoaded', () => {
     window.jogo = new Jogo();
+    console.log('Jogo inicializado com sucesso');
 });

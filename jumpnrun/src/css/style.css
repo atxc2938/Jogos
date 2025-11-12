@@ -22,7 +22,6 @@ body {
     transform-origin: center center;
 }
 
-/* CENÁRIO DE FUNDO */
 #terceiro-plano {
     position: absolute;
     width: 100%;
@@ -82,7 +81,6 @@ body {
     z-index: 5;
 }
 
-/* ELEMENTOS DO JOGO */
 #particles-container {
     position: absolute;
     width: 100%;
@@ -186,7 +184,6 @@ body {
     background-color: rgba(0, 0, 255, 0.2);
 }
 
-/* PERSONAGEM */
 #personagem {
     position: absolute;
     width: 83px;
@@ -204,7 +201,6 @@ body {
     transition: left 0.8s ease-out, opacity 0.8s ease-out;
 }
 
-/* TELA PRINCIALP */
 #menu-principal {
     position: absolute;
     top: 40%;
@@ -235,7 +231,6 @@ body {
     object-fit: contain;
 }
 
-/* MENU DE DIFICULDADE */
 #menu-dificuldade {
     position: absolute;
     top: 50%;
@@ -256,7 +251,6 @@ body {
     align-items: center;
 }
 
-/* BOTÃO FÁCIL */
 #facil-button {
     width: 280px;
     height: 280px;
@@ -278,7 +272,6 @@ body {
     transform: translate(-70px, -20px);
 }
 
-/* BOTÃO MÉDIO */
 #medio-button {
     width: 280px;
     height: 280px;
@@ -300,7 +293,6 @@ body {
     transform: translate(-70px, -20px);
 }
 
-/* BOTÃO DIFÍCIL */
 #dificil-button {
     width: 280px;
     height: 280px;
@@ -322,7 +314,6 @@ body {
     transform: translate(-70px, -20px);
 }
 
-/* BOTÃO TUTORIAL */
 #tutorial-button {
     width: 280px;
     height: 280px;
@@ -390,7 +381,6 @@ body {
     object-fit: contain;
 }
 
-/* BOTÃO DE PAUSE */
 .pause-button {
     position: absolute;
     top: 40px;
@@ -418,7 +408,6 @@ body {
     transform: scale(1.1);
 }
 
-/* MENU DE PAUSE */
 #menu-pause {
     position: absolute;
     top: 0;
@@ -477,7 +466,6 @@ body {
     margin-top: -55px;
 }
 
-/* GAME OVER */
 #tela-game-over {
     position: absolute;
     top: 0;
@@ -517,7 +505,6 @@ body {
     transform: scale(1.1);
 }
 
-/* MOEDA */
 #itens-coletaveis-container {
     position: absolute;
     width: 100%;
@@ -560,9 +547,8 @@ body {
     }
 }
 
-/* CONTADOR DE ITENS */
 #contador-itens-container {
-    position: absolute;
+    position: fixed;
     top: 40px;
     left: 50%;
     transform: translateX(-50%);
@@ -610,7 +596,6 @@ body {
     text-align: center;
 }
 
-/* MENU DE SKIN */
 #menu-skin {
     position: absolute;
     top: 0;
@@ -841,7 +826,6 @@ body {
     box-shadow: 0 0 20px #9F7AEA;
 }
 
-/* MENU DE CONFIGURAÇÕES */
 #menu-configuracoes {
     position: absolute;
     top: 0;
@@ -958,4 +942,46 @@ body {
     background-position: center;
     pointer-events: none;
     z-index: 11;
+}
+
+#timer-container {
+    position: fixed;
+    top: 40px;
+    left: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 25px;
+    padding: 10px 30px;
+    border: 2px solid rgba(159, 122, 234, 0.3);
+    box-shadow: 0 0 20px rgba(159, 122, 234, 0.2);
+    min-width: 120px;
+}
+
+#timer-container.visivel {
+    opacity: 1;
+}
+
+#timer {
+    font-size: 36px;
+    font-weight: bold;
+    color: #FFFFFF;
+    text-shadow: 
+        2px 2px 0 #9F7AEA,
+        4px 4px 0 #6A0DAD,
+        0 0 10px #B19CD9,
+        0 0 20px #9F7AEA;
+    font-family: 'Arial Black', 'Segoe UI', sans-serif;
+    letter-spacing: 2px;
+    text-align: center;
+}
+
+@keyframes piscar {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
 }

@@ -9,21 +9,36 @@ class ItemColetavelController {
         this.moedaManager = new MoedaManager();
         this.tutorialMoedaCriada = false;
         this.velocidadeBase = 0.18;
+        this.primeiroObstaculoCriado = false;
+        this.moedaTutorialCriada = false;
+        this.plataformaTutorialCriada = false;
     }
 
     iniciar() {
         this.jogoIniciado = true;
-        this.moedaManager.reiniciarFase();
         this.atualizarContador();
         this.mostrarContador();
         
         if (window.jogo && window.jogo.dificuldadeAtual === 'tutorial') {
-            setTimeout(() => {
-                this.criarMoedaTutorial();
-            }, 7500);
+            this.aguardarPlataformaTutorial();
         } else {
             this.criarMoedasEmTodasPlataformas();
         }
+    }
+
+    aguardarPlataformaTutorial() {
+        const verificarPlataforma = setInterval(() => {
+            if (window.jogo && window.jogo.obstaculoController && 
+                window.jogo.obstaculoController.primeiraPlataformaCriada && 
+                !this.moedaTutorialCriada) {
+                clearInterval(verificarPlataforma);
+                this.plataformaTutorialCriada = true;
+                
+                setTimeout(() => {
+                    this.criarMoedaTutorial();
+                }, 3000);
+            }
+        }, 100);
     }
 
     parar() {
@@ -31,27 +46,31 @@ class ItemColetavelController {
         this.limparItens();
         this.esconderContador();
         this.tutorialMoedaCriada = false;
+        this.primeiroObstaculoCriado = false;
+        this.moedaTutorialCriada = false;
+        this.plataformaTutorialCriada = false;
     }
 
     criarMoedaTutorial() {
-        if (this.tutorialMoedaCriada) return;
+        if (this.moedaTutorialCriada || !this.jogoIniciado) return;
         
         const moeda = document.createElement('div');
         moeda.className = 'item-coletavel';
-        moeda.style.left = '1500px';
+        moeda.style.left = '1920px';
         moeda.style.bottom = '184px';
+        moeda.style.opacity = '1';
 
         this.container.appendChild(moeda);
 
         const imagem = document.createElement('div');
         imagem.className = 'imagem-acima moeda-tutorial';
-        imagem.style.left = '1350px';
+        imagem.style.left = '1770px';
         imagem.style.bottom = '250px';
         this.container.appendChild(imagem);
 
         const itemData = {
             element: moeda,
-            x: 1500,
+            x: 1920,
             y: 184,
             width: 30,
             height: 30,
@@ -62,7 +81,7 @@ class ItemColetavelController {
         };
 
         this.itens.push(itemData);
-        this.tutorialMoedaCriada = true;
+        this.moedaTutorialCriada = true;
     }
 
     criarMoedasEmTodasPlataformas() {
@@ -223,11 +242,13 @@ class ItemColetavelController {
         this.itens = [];
         this.atualizarContador();
         this.tutorialMoedaCriada = false;
+        this.primeiroObstaculoCriado = false;
+        this.moedaTutorialCriada = false;
+        this.plataformaTutorialCriada = false;
     }
 
     reiniciar() {
         this.limparItens();
-        this.moedaManager.reiniciarFase();
         this.atualizarContador();
     }
 

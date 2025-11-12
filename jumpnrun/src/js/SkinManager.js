@@ -7,11 +7,13 @@ class SkinManager {
             'personagem_principal.png',
             'oshawott.png', 
             'bisteca.png',
+            'Sério.png'
         ];
         this.precosSkins = {
             'personagem_principal': 0,
             'oshawott': 15,
             'bisteca': 10,
+            'Sério': 5
         };
         this.inicializarSkins();
     }

@@ -172,5 +172,10 @@ class MenuController {
         telaGameOver.style.display = 'none';
         const contadorItens = document.getElementById('contador-itens-container');
         contadorItens.classList.remove('visivel');
+        // Esconder timer
+        const timerContainer = document.getElementById('timer-container');
+        if (timerContainer) {
+            timerContainer.classList.remove('visivel');
+        }
     }
 }
