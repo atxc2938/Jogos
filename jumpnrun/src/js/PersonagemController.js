@@ -95,7 +95,10 @@ class PersonagemController {
     emitirPoeira() {
         if ((this.estaNoChao || this.estaEmPlataforma) && !this.pulando) {
             const personagemX = parseInt(this.personagem.style.left) || 250;
-            this.particula.emitParticles(personagemX);
+            const personagemBottom = parseInt(this.personagem.style.bottom) || this.alturaChao;
+            
+            // Passar a posição real do personagem (incluindo plataformas)
+            this.particula.emitParticles(personagemX, personagemBottom);
         }
     }
 

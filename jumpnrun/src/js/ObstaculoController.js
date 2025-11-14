@@ -386,9 +386,14 @@ class ObstaculoController {
         const personagem = document.getElementById('personagem');
         if (!personagem) return;
 
+        // Obter a escala atual do container
+        const container = document.getElementById('game-container');
+        const scaleMatch = container.style.transform.match(/scale\(([^)]+)\)/);
+        const scale = scaleMatch ? parseFloat(scaleMatch[1]) : 1;
+
         for (const obstaculo of this.obstaculos) {
             if (obstaculo.tipo === 'espinho') {
-                const colidiu = this.verificarColisaoTriangularComPersonagem(personagem, obstaculo);
+                const colidiu = this.verificarColisaoTriangularComPersonagem(personagem, obstaculo, scale);
                 if (colidiu) {
                     this.matarPersonagem();
                     return;
@@ -399,24 +404,25 @@ class ObstaculoController {
         const personagemRect = personagem.getBoundingClientRect();
         const containerRect = this.container.getBoundingClientRect();
 
-        const personagemX = personagemRect.left - containerRect.left;
-        const personagemY = containerRect.bottom - personagemRect.bottom;
-        const personagemWidth = personagemRect.width;
-        const personagemHeight = personagemRect.height;
+        const personagemX = (personagemRect.left - containerRect.left) / scale;
+        const personagemY = (containerRect.bottom - personagemRect.bottom) / scale;
+        const personagemWidth = personagemRect.width / scale;
+        const personagemHeight = personagemRect.height / scale;
 
         this.itemColetavelController.verificarColisaoComPersonagem(
-            personagemX, personagemY, personagemWidth, personagemHeight
+            personagemX, personagemY, personagemWidth, personagemHeight, scale
         );
     }
 
-    verificarColisaoTriangularComPersonagem(personagem, obstaculo) {
+    verificarColisaoTriangularComPersonagem(personagem, obstaculo, scale) {
         const personagemRect = personagem.getBoundingClientRect();
         const containerRect = this.container.getBoundingClientRect();
 
-        const personagemX = personagemRect.left - containerRect.left;
-        const personagemY = containerRect.bottom - personagemRect.bottom;
-        const personagemWidth = personagemRect.width;
-        const personagemHeight = personagemRect.height;
+        // Ajustar as coordenadas pelo scale
+        const personagemX = (personagemRect.left - containerRect.left) / scale;
+        const personagemY = (containerRect.bottom - personagemRect.bottom) / scale;
+        const personagemWidth = personagemRect.width / scale;
+        const personagemHeight = personagemRect.height / scale;
 
         return this.verificarColisaoTriangular(
             personagemX, personagemY, personagemWidth, personagemHeight,

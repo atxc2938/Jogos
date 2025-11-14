@@ -40,7 +40,8 @@ class Jogo {
             const scale = Math.min(scaleX, scaleY);
             
             const minScale = 0.3;
-            const finalScale = Math.max(scale, minScale);
+            const maxScale = 1.5; // Limitar escala máxima para não quebrar as hitboxes
+            const finalScale = Math.max(minScale, Math.min(scale, maxScale));
             
             this.container.style.transform = `scale(${finalScale})`;
             

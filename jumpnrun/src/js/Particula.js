@@ -79,7 +79,7 @@ class Particula {
 
             if (particle.age >= particle.life) {
                 particle.element.remove();
-                this.particles.splice(i, 1);
+                this.particles.splice(i, 1);    
                 continue;
             }
 

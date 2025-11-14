@@ -173,7 +173,7 @@ class ItemColetavelController {
         }
     }
 
-    verificarColisaoComPersonagem(personagemX, personagemY, personagemWidth, personagemHeight) {
+    verificarColisaoComPersonagem(personagemX, personagemY, personagemWidth, personagemHeight, scale) {
         const itensParaColetar = [];
         
         for (let i = this.itens.length - 1; i >= 0; i--) {
