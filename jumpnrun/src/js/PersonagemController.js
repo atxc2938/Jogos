@@ -3,12 +3,9 @@ class PersonagemController {
         this.personagem = personagemElement;
         this.estaNoChao = true;
         
-        // FÍSICA BASE EM 1920x1080
         this.velocidadeY = 0;
-        this.gravidadeBase = 0.6;
-        this.velocidadePuloBase = 18;
-        this.gravidade = this.gravidadeBase;
-        this.velocidadePulo = this.velocidadePuloBase;
+        this.gravidade = 0.6;
+        this.velocidadePulo = 18;
         
         this.rotacao = 0;
         this.rotacaoAlvo = 0;
@@ -24,7 +21,6 @@ class PersonagemController {
         this.plataformaAtual = null;
         this.ultimaPlataforma = null;
         this.tempoForaDaPlataforma = 0;
-        this.fatorFisica = 1;
     }
 
     iniciarControles() {
@@ -73,16 +69,6 @@ class PersonagemController {
                 this.podePular = true;
             }, 200);
         }
-    }
-
-    atualizarFisicaParaEscala(fatorVelocidade) {
-        this.fatorFisica = fatorVelocidade;
-        
-        // CORREÇÃO: Física quase idêntica em todas as resoluções
-        this.gravidade = this.gravidadeBase;
-        this.velocidadePulo = this.velocidadePuloBase;
-        
-        console.log(`🎯 Física ajustada: Gravidade=${this.gravidade.toFixed(2)}, Pulo=${this.velocidadePulo.toFixed(2)}`);
     }
 
     iniciarLoopAnimacao() {
@@ -252,9 +238,6 @@ class PersonagemController {
         this.tempoRotacao = 0;
         this.pulando = false;
         this.podePular = true;
-        this.fatorFisica = 1;
-        this.gravidade = this.gravidadeBase;
-        this.velocidadePulo = this.velocidadePuloBase;
         this.personagem.style.transform = 'rotate(0deg)';
         this.personagem.style.bottom = this.alturaChao + 'px';
     }

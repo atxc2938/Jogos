@@ -3,7 +3,6 @@ class Jogo {
         this.container = document.getElementById('game-container');
         this.personagem = document.getElementById('personagem');
         
-        // VELOCIDADES BASE EM 1920x1080
         this.velocidadeMenu1 = 0.035;
         this.velocidadeMenu2 = 0.09;
         this.velocidadeJogo1 = 0.07;
@@ -32,9 +31,8 @@ class Jogo {
         this.cenario1.iniciarAnimacao();
         this.cenario2.iniciarAnimacao();
         
-        // Escutar mudanças de resolução
         window.addEventListener('resolutionChanged', (event) => {
-            this.atualizarTudoParaEscala(event.detail.scale);
+            console.log(`🔄 Resolução alterada: ${event.detail.scale.toFixed(2)}`);
         });
     }
 
@@ -48,65 +46,40 @@ class Jogo {
         this.personagem.style.opacity = '1';
         this.personagem.style.left = '250px';
         
-        // CORREÇÃO: Ajustar TUDO para a escala atual
-        const escalaAtual = this.resolutionController.getScale();
-        this.atualizarTudoParaEscala(escalaAtual);
+        this.cenario1.setVelocidadeSuave(this.velocidadeJogo1, 500);
+        this.cenario2.setVelocidadeSuave(this.velocidadeJogo2, 500);
         
+        this.configurarDificuldade(dificuldade);
+        
+        this.obstaculoController.atualizarVelocidade(this.velocidadeJogo2);
         this.obstaculoController.iniciar();
+        
         this.iniciarAumentoVelocidade();
         this.personagemController.iniciarControles();
         this.timerController.iniciarTimer();
     }
 
-    atualizarTudoParaEscala(escala) {
-        if (!this.jogoIniciado) return;
-        
-        // CORREÇÃO DEFINITIVA: Fator quase igual em todas as resoluções
-        const fatorVelocidade = 0.95 + (escala * 0.05); // Varia de 0.95 a 1.0
-        
-        console.log(`🎯 Atualizando tudo para escala ${escala.toFixed(2)} - Fator Velocidade: ${fatorVelocidade.toFixed(2)}`);
-        
-        // Atualizar cenários
-        this.cenario1.setVelocidadeSuave(this.velocidadeJogo1 * fatorVelocidade, 200);
-        this.cenario2.setVelocidadeSuave(this.velocidadeJogo2 * fatorVelocidade, 200);
-        
-        // Atualizar obstáculos
-        this.obstaculoController.atualizarVelocidade(this.velocidadeJogo2 * fatorVelocidade);
-        
-        // Atualizar física do personagem
-        this.personagemController.atualizarFisicaParaEscala(fatorVelocidade);
-        
-        // Atualizar validador de pulos
-        this.obstaculoController.atualizarTudoParaEscala(fatorVelocidade);
-        
-        // Reconfigurar dificuldade
-        this.configurarDificuldade(this.dificuldadeAtual);
-    }
-
     configurarDificuldade(dificuldade) {
-        const escala = this.resolutionController.getScale();
-        const fatorVelocidade = 0.95 + (escala * 0.05);
-        
         switch(dificuldade) {
             case 'facil':
-                this.velocidadeMaxima = 0.2 * fatorVelocidade;
-                this.incrementoVelocidade = 0.02 * fatorVelocidade;
-                this.obstaculoController.velocidadeBase = 0.15 * fatorVelocidade;
+                this.velocidadeMaxima = 0.2;
+                this.incrementoVelocidade = 0.02;
+                this.obstaculoController.velocidadeBase = 0.15;
                 break;
             case 'medio':
-                this.velocidadeMaxima = 0.3 * fatorVelocidade;
-                this.incrementoVelocidade = 0.05 * fatorVelocidade;
-                this.obstaculoController.velocidadeBase = 0.18 * fatorVelocidade;
+                this.velocidadeMaxima = 0.3;
+                this.incrementoVelocidade = 0.05;
+                this.obstaculoController.velocidadeBase = 0.18;
                 break;
             case 'dificil':
-                this.velocidadeMaxima = 0.4 * fatorVelocidade;
-                this.incrementoVelocidade = 0.08 * fatorVelocidade;
-                this.obstaculoController.velocidadeBase = 0.22 * fatorVelocidade;
+                this.velocidadeMaxima = 0.4;
+                this.incrementoVelocidade = 0.08;
+                this.obstaculoController.velocidadeBase = 0.22;
                 break;
             case 'tutorial':
-                this.velocidadeMaxima = 0.3 * fatorVelocidade;
-                this.incrementoVelocidade = 0.05 * fatorVelocidade;
-                this.obstaculoController.velocidadeBase = 0.18 * fatorVelocidade;
+                this.velocidadeMaxima = 0.3;
+                this.incrementoVelocidade = 0.05;
+                this.obstaculoController.velocidadeBase = 0.18;
                 break;
         }
         
@@ -119,11 +92,8 @@ class Jogo {
         this.jogoIniciado = false;
         this.dificuldadeAtual = null;
         
-        const escala = this.resolutionController.getScale();
-        const fatorVelocidade = 0.95 + (escala * 0.05);
-        
-        this.cenario1.setVelocidade(this.velocidadeMenu1 * fatorVelocidade);
-        this.cenario2.setVelocidade(this.velocidadeMenu2 * fatorVelocidade);
+        this.cenario1.setVelocidade(this.velocidadeMenu1);
+        this.cenario2.setVelocidade(this.velocidadeMenu2);
         
         this.timerController.pararTimer();
         this.menuController.mostrarMenu();
@@ -133,11 +103,8 @@ class Jogo {
         this.intervaloVelocidade = setInterval(() => {
             if (this.menuController.pauseController.estaPausado()) return;
             
-            const escala = this.resolutionController.getScale();
-            const fatorVelocidade = 0.95 + (escala * 0.05);
-            
-            const novaVelocidade1 = Math.min(this.cenario1.velocidadeAlvo + (this.incrementoVelocidade * fatorVelocidade), this.velocidadeMaxima);
-            const novaVelocidade2 = Math.min(this.cenario2.velocidadeAlvo + (this.incrementoVelocidade * fatorVelocidade), this.velocidadeMaxima);
+            const novaVelocidade1 = Math.min(this.cenario1.velocidadeAlvo + this.incrementoVelocidade, this.velocidadeMaxima);
+            const novaVelocidade2 = Math.min(this.cenario2.velocidadeAlvo + this.incrementoVelocidade, this.velocidadeMaxima);
             
             this.cenario1.setVelocidadeSuave(novaVelocidade1, 1000);
             this.cenario2.setVelocidadeSuave(novaVelocidade2, 1000);
