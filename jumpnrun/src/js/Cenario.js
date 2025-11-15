@@ -8,14 +8,12 @@ class Cenario {
         this.animacaoId = null;
         this.transicaoVelocidade = null;
         this.pausado = false;
-        this.fatorVelocidade = 1.0;
     }
 
     iniciarAnimacao() {
         const animar = () => {
             if (!this.pausado) {
-                const velocidadeEfetiva = this.velocidade * this.fatorVelocidade;
-                this.posicao -= velocidadeEfetiva;
+                this.posicao -= this.velocidade;
                 
                 if (this.loopPoint !== undefined && this.posicao <= this.loopPoint) {
                     this.posicao = 0;
@@ -60,10 +58,6 @@ class Cenario {
         };
         
         this.transicaoVelocidade = setInterval(transicionar, 16);
-    }
-
-    atualizarFatorVelocidade(fator) {
-        this.fatorVelocidade = fator;
     }
 
     pausar() {

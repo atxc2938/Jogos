@@ -14,7 +14,6 @@ class Jogo {
         this.gameOverController = new GameOverController();
         this.configuracaoController = new ConfiguracaoController();
         this.timerController = new TimerController();
-        this.resolutionController = window.resolutionController || new ResolutionController();
         this.jogoIniciado = false;
         this.dificuldadeAtual = null;
         this.tempoInicio = null;
@@ -22,30 +21,38 @@ class Jogo {
         this.velocidadeMaxima = 0.3;
         this.incrementoVelocidade = 0.05;
         this.init();
+        this.initScale();
     }
 
     init() {
         console.log('Jogo Jump N Run inicializado');
         this.cenario1.iniciarAnimacao();
         this.cenario2.iniciarAnimacao();
-        
-        window.addEventListener('escalaAtualizada', (event) => {
-            this.atualizarVelocidadesPorEscala();
-        });
     }
 
-    atualizarVelocidadesPorEscala() {
-        if (!this.jogoIniciado) return;
+    initScale() {
+        const updateScale = () => {
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            
+            const scaleX = windowWidth / 1920;
+            const scaleY = windowHeight / 1080;
+            const scale = Math.min(scaleX, scaleY);
+            
+            const minScale = 0.3;
+            const maxScale = 1.5; // Limitar escala máxima para não quebrar as hitboxes
+            const finalScale = Math.max(minScale, Math.min(scale, maxScale));
+            
+            this.container.style.transform = `scale(${finalScale})`;
+            
+            this.container.style.position = 'absolute';
+            this.container.style.left = '50%';
+            this.container.style.top = '50%';
+            this.container.style.transform = `translate(-50%, -50%) scale(${finalScale})`;
+        };
 
-        const fatorVelocidade = this.resolutionController.getFatorVelocidade();
-        
-        const velocidadeAtual1 = this.cenario1.velocidadeAlvo || this.velocidadeJogo1;
-        const velocidadeAtual2 = this.cenario2.velocidadeAlvo || this.velocidadeJogo2;
-        
-        this.cenario1.setVelocidade(velocidadeAtual1 * fatorVelocidade);
-        this.cenario2.setVelocidade(velocidadeAtual2 * fatorVelocidade);
-        
-        this.obstaculoController.atualizarVelocidade(velocidadeAtual2 * fatorVelocidade);
+        updateScale();
+        window.addEventListener('resize', updateScale);
     }
 
     iniciarJogo(dificuldade) {
@@ -58,14 +65,12 @@ class Jogo {
         this.personagem.style.opacity = '1';
         this.personagem.style.left = '250px';
         
-        const fatorVelocidade = this.resolutionController.getFatorVelocidade();
-        
-        this.cenario1.setVelocidadeSuave(this.velocidadeJogo1 * fatorVelocidade, 500);
-        this.cenario2.setVelocidadeSuave(this.velocidadeJogo2 * fatorVelocidade, 500);
+        this.cenario1.setVelocidadeSuave(this.velocidadeJogo1, 500);
+        this.cenario2.setVelocidadeSuave(this.velocidadeJogo2, 500);
         
         this.configurarDificuldade(dificuldade);
         
-        this.obstaculoController.atualizarVelocidade(this.velocidadeJogo2 * fatorVelocidade);
+        this.obstaculoController.atualizarVelocidade(this.velocidadeJogo2);
         this.obstaculoController.iniciar();
         
         this.iniciarAumentoVelocidade();
@@ -105,10 +110,8 @@ class Jogo {
         this.jogoIniciado = false;
         this.dificuldadeAtual = null;
         
-        const fatorVelocidade = this.resolutionController.getFatorVelocidade();
-        
-        this.cenario1.setVelocidade(this.velocidadeMenu1 * fatorVelocidade);
-        this.cenario2.setVelocidade(this.velocidadeMenu2 * fatorVelocidade);
+        this.cenario1.setVelocidade(this.velocidadeMenu1);
+        this.cenario2.setVelocidade(this.velocidadeMenu2);
         
         this.timerController.pararTimer();
         
@@ -119,14 +122,15 @@ class Jogo {
         this.intervaloVelocidade = setInterval(() => {
             if (this.menuController.pauseController.estaPausado()) return;
             
-            const fatorVelocidade = this.resolutionController.getFatorVelocidade();
-            const novaVelocidade1 = Math.min(this.cenario1.velocidadeAlvo + this.incrementoVelocidade, this.velocidadeMaxima) * fatorVelocidade;
-            const novaVelocidade2 = Math.min(this.cenario2.velocidadeAlvo + this.incrementoVelocidade, this.velocidadeMaxima) * fatorVelocidade;
+            const novaVelocidade1 = Math.min(this.cenario1.velocidadeAlvo + this.incrementoVelocidade, this.velocidadeMaxima);
+            const novaVelocidade2 = Math.min(this.cenario2.velocidadeAlvo + this.incrementoVelocidade, this.velocidadeMaxima);
             
             this.cenario1.setVelocidadeSuave(novaVelocidade1, 1000);
             this.cenario2.setVelocidadeSuave(novaVelocidade2, 1000);
             
             this.obstaculoController.atualizarVelocidade(novaVelocidade2);
+            
+            console.log(`Velocidades aumentadas: ${novaVelocidade1.toFixed(2)} / ${novaVelocidade2.toFixed(2)}`);
         }, 60000);
     }
 
@@ -139,10 +143,6 @@ class Jogo {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    if (!window.resolutionController) {
-        window.resolutionController = new ResolutionController();
-    }
-    
     window.jogo = new Jogo();
     console.log('Jogo inicializado com sucesso');
 });

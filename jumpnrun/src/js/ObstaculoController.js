@@ -527,7 +527,7 @@ class ObstaculoController {
             }
         }
         this.obstaculos = [];
-        this.primeiroEspinhoCriada = false;
+        this.primeiroEspinhoCriado = false;
         this.primeiraPlataformaCriada = false;
         this.ultimoXObstaculo = 1920;
         this.geradorObstaculos.reiniciar();
