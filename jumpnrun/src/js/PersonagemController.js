@@ -4,8 +4,10 @@ class PersonagemController {
         this.estaNoChao = true;
         
         this.velocidadeY = 0;
-        this.gravidade = 0.6;
-        this.velocidadePulo = 18;
+        this.gravidadeBase = 0.6; // NOVO: Gravidade base
+        this.velocidadePuloBase = 18; // NOVO: Velocidade base do pulo
+        this.gravidade = this.gravidadeBase;
+        this.velocidadePulo = this.velocidadePuloBase;
         
         this.rotacao = 0;
         this.rotacaoAlvo = 0;
@@ -21,6 +23,17 @@ class PersonagemController {
         this.plataformaAtual = null;
         this.ultimaPlataforma = null;
         this.tempoForaDaPlataforma = 0;
+        
+        // NOVO: Configuração para responsividade
+        this.resolutionController = window.jogo?.resolutionController;
+    }
+
+    // NOVO: Método para atualizar física baseado na escala
+    atualizarFisicaParaEscala(fatorVelocidade) {
+        this.gravidade = this.gravidadeBase * fatorVelocidade;
+        this.velocidadePulo = this.velocidadePuloBase * fatorVelocidade;
+        
+        console.log(`🎯 Personagem ajustado: Pulo=${this.velocidadePulo.toFixed(2)}, Grav=${this.gravidade.toFixed(2)}`);
     }
 
     iniciarControles() {
@@ -61,6 +74,7 @@ class PersonagemController {
             this.pulando = true;
             this.podePular = false;
             
+            // Usar velocidade ajustada
             this.velocidadeY = this.velocidadePulo;
             this.rotacaoAlvo = this.rotacaoAlvo + 90;
             this.tempoRotacao = 0;
@@ -127,6 +141,7 @@ class PersonagemController {
         }
 
         if (!this.estaNoChao && !colidindoComPlataforma) {
+            // Usar gravidade ajustada
             this.velocidadeY -= this.gravidade;
             bottomAtual += this.velocidadeY;
             this.tempoForaDaPlataforma += 16;

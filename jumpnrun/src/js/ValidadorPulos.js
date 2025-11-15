@@ -8,7 +8,7 @@ class ValidadorPulos {
         this.margemSeguranca = 1.3;
         this.alturaMaximaPulo = this.calcularAlturaMaximaPulo();
         this.distanciaMaximaPulo = this.calcularDistanciaMaximaPulo();
-        this.fatorFisica = 1;
+        this.fatorFisica = 1; // NOVO: Fator para ajuste de escala
     }
 
     atualizarVelocidade(novaVelocidade) {

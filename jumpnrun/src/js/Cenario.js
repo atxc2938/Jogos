@@ -1,89 +1,84 @@
 class Cenario {
-    constructor(seletor, velocidade, loopPoint) {
-        this.elemento = document.getElementById(seletor);
+    constructor(elementId, velocidade, loopPoint = -144.2) {
+        this.element = document.getElementById(elementId);
         this.velocidade = velocidade;
         this.velocidadeAlvo = velocidade;
-        this.loopPoint = loopPoint;
         this.posicao = 0;
+        this.loopPoint = loopPoint;
         this.animacaoId = null;
-        this.transicaoVelocidade = null;
+        this.ultimoTempo = 0;
         this.pausado = false;
-        this.escalaAtual = 1;
+        
+        // NOVO: Configuração para responsividade
+        this.resolutionController = window.jogo?.resolutionController;
     }
 
     iniciarAnimacao() {
-        const animar = () => {
-            if (!this.pausado) {
-                this.posicao -= this.velocidade;
-                
-                if (this.loopPoint !== undefined && this.posicao <= this.loopPoint) {
-                    this.posicao = 0;
-                }
-                
-                this.elemento.style.backgroundPosition = `${this.posicao}% bottom`;
-            }
-            
-            this.animacaoId = requestAnimationFrame(animar);
-        };
+        this.ultimoTempo = performance.now();
+        this.animar();
+    }
+
+    animar(tempoAtual = this.ultimoTempo) {
+        if (this.pausado) return;
+
+        const deltaTime = tempoAtual - this.ultimoTempo;
+        this.ultimoTempo = tempoAtual;
+
+        // NOVO: Aplicar fator de velocidade baseado na escala
+        const fatorVelocidade = this.resolutionController?.getFatorVelocidade() || 1;
+        const velocidadeAjustada = this.velocidade * fatorVelocidade;
+
+        // Suavizar transição de velocidade
+        if (Math.abs(this.velocidade - this.velocidadeAlvo) > 0.001) {
+            this.velocidade += (this.velocidadeAlvo - this.velocidade) * 0.05;
+        }
+
+        // Atualizar posição com velocidade ajustada
+        this.posicao -= velocidadeAjustada * (deltaTime / 16);
         
-        this.animacaoId = requestAnimationFrame(animar);
+        // CORREÇÃO DO LOOP: Usar porcentagem relativa para funcionar em qualquer escala
+        const loopPointAjustado = this.loopPoint * (this.resolutionController?.getScale() || 1);
+        
+        if (this.posicao <= loopPointAjustado) {
+            this.posicao = 0;
+        }
+
+        // Aplicar background-position em porcentagem (já é relativo)
+        this.element.style.backgroundPosition = `${this.posicao}% bottom`;
+
+        this.animacaoId = requestAnimationFrame((tempo) => this.animar(tempo));
     }
 
     setVelocidade(novaVelocidade) {
-        this.velocidade = novaVelocidade;
         this.velocidadeAlvo = novaVelocidade;
     }
 
-    setVelocidadeSuave(novaVelocidade, duracao) {
+    setVelocidadeSuave(novaVelocidade, duracao = 1000) {
         this.velocidadeAlvo = novaVelocidade;
-        
-        if (this.transicaoVelocidade) {
-            clearInterval(this.transicaoVelocidade);
-        }
-        
-        const velocidadeInicial = this.velocidade;
-        const diferenca = novaVelocidade - velocidadeInicial;
-        const startTime = Date.now();
-        
-        const transicionar = () => {
-            const tempoAtual = Date.now();
-            const progresso = Math.min((tempoAtual - startTime) / duracao, 1);
-            const progressoSuavizado = progresso * progresso * (3 - 2 * progresso);
-            
-            this.velocidade = velocidadeInicial + (diferenca * progressoSuavizado);
-            
-            if (progresso >= 1) {
-                clearInterval(this.transicaoVelocidade);
-                this.transicaoVelocidade = null;
-            }
-        };
-        
-        this.transicaoVelocidade = setInterval(transicionar, 16);
-    }
-
-    atualizarParaEscala(novaEscala) {
-        this.escalaAtual = novaEscala;
-        // A velocidade já é ajustada externamente, apenas atualizamos a escala interna
     }
 
     pausar() {
         this.pausado = true;
-    }
-
-    despausar() {
-        this.pausado = false;
-    }
-
-    pararAnimacao() {
         if (this.animacaoId) {
             cancelAnimationFrame(this.animacaoId);
         }
-        if (this.transicaoVelocidade) {
-            clearInterval(this.transicaoVelocidade);
+    }
+
+    despausar() {
+        if (this.pausado) {
+            this.pausado = false;
+            this.ultimoTempo = performance.now();
+            this.animar();
         }
     }
 
-    setLoopPoint(novoLoopPoint) {
-        this.loopPoint = novoLoopPoint;
+    // NOVO: Método para atualizar com mudanças de resolução
+    atualizarParaNovaResolucao() {
+        this.resolutionController = window.jogo?.resolutionController;
+        // Reiniciar animação para aplicar novas configurações
+        if (!this.pausado) {
+            this.pausar();
+            this.despausar();
+        }
     }
 }
