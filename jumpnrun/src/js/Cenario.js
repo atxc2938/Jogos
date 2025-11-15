@@ -8,6 +8,7 @@ class Cenario {
         this.animacaoId = null;
         this.transicaoVelocidade = null;
         this.pausado = false;
+        this.escalaAtual = 1;
     }
 
     iniciarAnimacao() {
@@ -58,6 +59,11 @@ class Cenario {
         };
         
         this.transicaoVelocidade = setInterval(transicionar, 16);
+    }
+
+    atualizarParaEscala(novaEscala) {
+        this.escalaAtual = novaEscala;
+        // A velocidade já é ajustada externamente, apenas atualizamos a escala interna
     }
 
     pausar() {

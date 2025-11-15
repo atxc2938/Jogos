@@ -386,9 +386,8 @@ class ObstaculoController {
         const personagem = document.getElementById('personagem');
         if (!personagem) return;
 
-        const container = document.getElementById('game-container');
-        const scaleMatch = container.style.transform.match(/scale\(([^)]+)\)/);
-        const scale = scaleMatch ? parseFloat(scaleMatch[1]) : 1;
+        const resolutionController = window.jogo?.resolutionController;
+        const scale = resolutionController ? resolutionController.getScale() : 1;
 
         for (const obstaculo of this.obstaculos) {
             if (obstaculo.tipo === 'espinho') {
@@ -563,6 +562,12 @@ class ObstaculoController {
         this.obstaculos.forEach(obstaculo => {
             obstaculo.velocidade = this.velocidadeBase;
         });
+
+        console.log(`🎯 Velocidade obstáculos atualizada: ${novaVelocidade.toFixed(3)}`);
+    }
+
+    atualizarTudoParaEscala(fatorVelocidade) {
+        this.geradorObstaculos.atualizarTudoParaEscala(fatorVelocidade);
     }
 
     configurarHitbox(tipo, configuracao) {

@@ -13,6 +13,11 @@ class GeradorObstaculos {
         this.validador.atualizarVelocidade(novaVelocidade);
     }
 
+    // NOVO MÉTODO: Atualizar tudo para escala
+    atualizarTudoParaEscala(fatorVelocidade) {
+        this.validador.atualizarFisicaParaEscala(fatorVelocidade);
+    }
+
     atualizarDificuldade(novaDificuldade) {
         this.dificuldade = novaDificuldade;
     }

@@ -3,7 +3,6 @@ class ResolutionController {
         this.targetWidth = 1920;
         this.targetHeight = 1080;
         this.container = document.getElementById('game-container');
-        this.resolutionContainer = document.getElementById('resolution-container');
         this.currentScale = 1;
         this.init();
     }
@@ -15,8 +14,10 @@ class ResolutionController {
             this.notificarMudancaEscala();
         });
         
-        // Notificar inicialização
-        setTimeout(() => this.notificarMudancaEscala(), 100);
+        // Forçar atualização inicial
+        setTimeout(() => {
+            this.forceUpdate();
+        }, 500);
     }
 
     updateScale() {
@@ -27,9 +28,9 @@ class ResolutionController {
         const scaleY = windowHeight / this.targetHeight;
         const scale = Math.min(scaleX, scaleY);
         
-        // Limitar escala mínima e máxima para evitar problemas
-        const minScale = 0.3;
-        const maxScale = 1.5;
+        // Limites mais amplos para melhor responsividade
+        const minScale = 0.3;   // 30% do tamanho original
+        const maxScale = 2.0;   // 200% do tamanho original
         const finalScale = Math.max(minScale, Math.min(scale, maxScale));
         
         this.currentScale = finalScale;
@@ -38,24 +39,21 @@ class ResolutionController {
         if (this.container) {
             this.container.style.transform = `translate(-50%, -50%) scale(${finalScale})`;
         }
+        
+        console.log(`🔄 Escala atualizada: ${finalScale.toFixed(2)} (Tela: ${windowWidth}x${windowHeight})`);
     }
 
     getScale() {
         return this.currentScale;
     }
 
+    // NOVO: Método para obter fator de velocidade (INVERSO da escala)
+    getFatorVelocidade() {
+        return 1 / this.currentScale;
+    }
+
     getCurrentWidth() {
         return window.innerWidth;
-    }
-
-    // Método para converter coordenadas baseadas na escala
-    scaleValue(value) {
-        return value * this.currentScale;
-    }
-
-    // Método para reverter coordenadas baseadas na escala
-    unscaleValue(value) {
-        return value / this.currentScale;
     }
 
     // Notificar todos os sistemas sobre mudança de escala
@@ -63,23 +61,28 @@ class ResolutionController {
         const evento = new CustomEvent('resolutionChanged', {
             detail: { 
                 scale: this.currentScale,
+                fatorVelocidade: this.getFatorVelocidade(),
                 width: window.innerWidth,
                 height: window.innerHeight
             }
         });
         window.dispatchEvent(evento);
+        
+        console.log(`📢 Notificação de escala: ${this.currentScale.toFixed(2)} | Fator Velocidade: ${this.getFatorVelocidade().toFixed(2)}`);
     }
 
-    // Método para obter a posição real de elementos considerando a escala
-    getScaledPosition(element) {
-        if (!element) return { x: 0, y: 0 };
-        
-        const rect = element.getBoundingClientRect();
-        const containerRect = this.container.getBoundingClientRect();
-        
-        return {
-            x: (rect.left - containerRect.left) / this.currentScale,
-            y: (containerRect.bottom - rect.bottom) / this.currentScale
-        };
+    // Método para forçar atualização imediata
+    forceUpdate() {
+        this.updateScale();
+        this.notificarMudancaEscala();
+    }
+
+    // DEBUG: Método para testar velocidades
+    debugVelocidades() {
+        console.log('=== DEBUG VELOCIDADES ===');
+        console.log(`Escala: ${this.currentScale.toFixed(2)}`);
+        console.log(`Fator Velocidade: ${this.getFatorVelocidade().toFixed(2)}`);
+        console.log(`Velocidade Base (0.18): ${(0.18 * this.getFatorVelocidade()).toFixed(3)}`);
+        console.log(`Velocidade Máxima (0.3): ${(0.3 * this.getFatorVelocidade()).toFixed(3)}`);
     }
 }

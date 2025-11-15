@@ -1,16 +1,29 @@
 class ValidadorPulos {
     constructor() {
         this.velocidadeAtual = 0.18;
-        this.velocidadePulo = 18;
-        this.gravidade = 0.6;
+        this.velocidadePuloBase = 18;
+        this.gravidadeBase = 0.6;
+        this.velocidadePulo = this.velocidadePuloBase;
+        this.gravidade = this.gravidadeBase;
         this.margemSeguranca = 1.3;
         this.alturaMaximaPulo = this.calcularAlturaMaximaPulo();
         this.distanciaMaximaPulo = this.calcularDistanciaMaximaPulo();
+        this.fatorFisica = 1;
     }
 
     atualizarVelocidade(novaVelocidade) {
         this.velocidadeAtual = novaVelocidade;
         this.distanciaMaximaPulo = this.calcularDistanciaMaximaPulo();
+    }
+
+    // NOVO MÉTODO: Atualizar física para escala
+    atualizarFisicaParaEscala(fatorVelocidade) {
+        this.fatorFisica = fatorVelocidade;
+        this.velocidadePulo = this.velocidadePuloBase * fatorVelocidade;
+        this.gravidade = this.gravidadeBase * fatorVelocidade;
+        this.distanciaMaximaPulo = this.calcularDistanciaMaximaPulo();
+        
+        console.log(`🎯 Validador ajustado: Pulo=${this.velocidadePulo.toFixed(2)}, Grav=${this.gravidade.toFixed(2)}`);
     }
 
     calcularAlturaMaximaPulo() {
@@ -145,9 +158,7 @@ class ValidadorPulos {
     }
 
     calcularEspacamentoPlataformas() {
-        const velocidadePulo = 18;
-        const gravidade = 0.6;
-        const tempoPulo = (2 * velocidadePulo) / gravidade;
+        const tempoPulo = (2 * this.velocidadePulo) / this.gravidade;
         const distanciaPulo = (this.velocidadeAtual * 1920 / 100) * tempoPulo;
         
         const espacamentoMinimo = distanciaPulo * this.margemSeguranca;
@@ -156,9 +167,7 @@ class ValidadorPulos {
     }
 
     calcularEspacamentoMinimoEspinhos() {
-        const velocidadePulo = 18;
-        const gravidade = 0.6;
-        const tempoPulo = (2 * velocidadePulo) / gravidade;
+        const tempoPulo = (2 * this.velocidadePulo) / this.gravidade;
         const distanciaPulo = (this.velocidadeAtual * 1920 / 100) * tempoPulo;
         
         let fatorDificuldade;
