@@ -386,7 +386,6 @@ class ObstaculoController {
         const personagem = document.getElementById('personagem');
         if (!personagem) return;
 
-        // Obter a escala atual do container
         const container = document.getElementById('game-container');
         const scaleMatch = container.style.transform.match(/scale\(([^)]+)\)/);
         const scale = scaleMatch ? parseFloat(scaleMatch[1]) : 1;
@@ -418,7 +417,6 @@ class ObstaculoController {
         const personagemRect = personagem.getBoundingClientRect();
         const containerRect = this.container.getBoundingClientRect();
 
-        // Ajustar as coordenadas pelo scale
         const personagemX = (personagemRect.left - containerRect.left) / scale;
         const personagemY = (containerRect.bottom - personagemRect.bottom) / scale;
         const personagemWidth = personagemRect.width / scale;
@@ -529,7 +527,7 @@ class ObstaculoController {
             }
         }
         this.obstaculos = [];
-        this.primeiroEspinhoCriado = false;
+        this.primeiroEspinhoCriada = false;
         this.primeiraPlataformaCriada = false;
         this.ultimoXObstaculo = 1920;
         this.geradorObstaculos.reiniciar();
