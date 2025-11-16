@@ -989,3 +989,84 @@ body {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
 }
+
+/* NOVOS ESTILOS PARA CONTROLE DE VELOCIDADE */
+.controle-velocidade {
+    margin: 20px 0;
+    padding: 15px;
+    background: rgba(159, 122, 234, 0.1);
+    border-radius: 12px;
+    border: 2px solid #9F7AEA;
+}
+
+.titulo-controle {
+    font-size: 18px;
+    font-weight: bold;
+    color: #FFFFFF;
+    text-align: center;
+    margin-bottom: 15px;
+    text-shadow: 0 0 8px #9F7AEA;
+}
+
+.botoes-velocidade {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.botao-config.velocidade {
+    padding: 10px 15px;
+    font-size: 20px;
+    font-weight: bold;
+    min-width: 50px;
+    background: linear-gradient(45deg, #9F7AEA, #B19CD9);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 10px rgba(159, 122, 234, 0.4);
+    color: #FFFFFF;
+}
+
+.botao-config.velocidade:hover {
+    background: linear-gradient(45deg, #B19CD9, #9F7AEA);
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #9F7AEA;
+}
+
+.botao-config.reset {
+    padding: 10px 15px;
+    font-size: 14px;
+    background: linear-gradient(45deg, #ff9900, #ff6600);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 10px rgba(255, 153, 0, 0.4);
+    color: #FFFFFF;
+}
+
+.botao-config.reset:hover {
+    background: linear-gradient(45deg, #ff6600, #ff9900);
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #ff9900;
+}
+
+.indicador-velocidade {
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    border: 1px solid #9F7AEA;
+    min-width: 80px;
+    text-align: center;
+}
+
+.indicador-velocidade span {
+    font-size: 18px;
+    font-weight: bold;
+    color: #FFFFFF;
+    text-shadow: 0 0 5px #9F7AEA;
+}

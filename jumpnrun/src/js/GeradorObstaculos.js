@@ -16,6 +16,7 @@ class GeradorObstaculos {
     // NOVO MÉTODO: Atualizar tudo para escala
     atualizarTudoParaEscala(fatorVelocidade) {
         this.validador.atualizarFisicaParaEscala(fatorVelocidade);
+        console.log(`🎯 GeradorObstaculos ajustado para escala: ${fatorVelocidade.toFixed(2)}`);
     }
 
     atualizarDificuldade(novaDificuldade) {

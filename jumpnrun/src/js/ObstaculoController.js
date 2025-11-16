@@ -12,9 +12,6 @@ class ObstaculoController {
         this.geradorObstaculos = new GeradorObstaculos();
         this.ultimoXObstaculo = 1920;
         this.itemColetavelController = new ItemColetavelController();
-        
-        // NOVO: Configuração para responsividade
-        this.resolutionController = window.jogo?.resolutionController;
     }
 
     iniciar() {
@@ -342,14 +339,10 @@ class ObstaculoController {
     }
 
     atualizarObstaculos() {
-        // NOVO: Aplicar fator de velocidade baseado na escala
-        const fatorVelocidade = this.resolutionController?.getFatorVelocidade() || 1;
-        
         for (let i = this.obstaculos.length - 1; i >= 0; i--) {
             const obstaculo = this.obstaculos[i];
             
-            // Velocidade ajustada pela escala
-            const velocidadePixels = (obstaculo.velocidade * 1920) / 100 * fatorVelocidade;
+            const velocidadePixels = (obstaculo.velocidade * 1920) / 100;
             obstaculo.x -= velocidadePixels;
             obstaculo.element.style.left = `${obstaculo.x}px`;
 
@@ -573,9 +566,10 @@ class ObstaculoController {
         console.log(`🎯 Velocidade obstáculos atualizada: ${novaVelocidade.toFixed(3)}`);
     }
 
-    // NOVO: Método para atualizar tudo quando a resolução mudar
+    // NOVO MÉTODO ADICIONADO PARA CORRIGIR O ERRO
     atualizarTudoParaEscala(fatorVelocidade) {
         this.geradorObstaculos.atualizarTudoParaEscala(fatorVelocidade);
+        console.log(`🎯 ObstaculoController ajustado para escala: ${fatorVelocidade.toFixed(2)}`);
     }
 
     configurarHitbox(tipo, configuracao) {

@@ -9,48 +9,146 @@ class ConfiguracaoController {
         this.botaoResetTudo = document.getElementById('botao-reset-tudo-config');
         this.moedaManager = new MoedaManager();
         this.skinManager = new SkinManager();
+        
+        // NOVOS BOTÕES DE VELOCIDADE (com verificação de null)
+        this.botaoAumentarVelocidade = document.getElementById('botao-aumentar-velocidade');
+        this.botaoDiminuirVelocidade = document.getElementById('botao-diminuir-velocidade');
+        this.botaoResetVelocidade = document.getElementById('botao-reset-velocidade');
+        this.indicadorVelocidade = document.getElementById('indicador-velocidade');
+        
+        this.velocidadeGlobal = 1.0; // Fator de velocidade global (1.0 = normal)
         this.init();
     }
 
     init() {
         // Botão Configurações no menu principal
-        this.configButton.addEventListener('click', () => {
-            this.mostrarMenuConfiguracoes();
-        });
+        if (this.configButton) {
+            this.configButton.addEventListener('click', () => {
+                this.mostrarMenuConfiguracoes();
+            });
+        }
 
         // Botão Voltar
-        this.botaoVoltarConfig.addEventListener('click', () => {
-            this.voltarParaMenuPrincipal();
-        });
+        if (this.botaoVoltarConfig) {
+            this.botaoVoltarConfig.addEventListener('click', () => {
+                this.voltarParaMenuPrincipal();
+            });
+        }
 
         // Botão Adicionar Moedas
-        this.botaoAddMoedas.addEventListener('click', () => {
-            this.adicionarMoedas(10);
-        });
+        if (this.botaoAddMoedas) {
+            this.botaoAddMoedas.addEventListener('click', () => {
+                this.adicionarMoedas(10);
+            });
+        }
 
         // Botão Resetar Moedas
-        this.botaoResetMoedas.addEventListener('click', () => {
-            this.resetarMoedas();
-        });
+        if (this.botaoResetMoedas) {
+            this.botaoResetMoedas.addEventListener('click', () => {
+                this.resetarMoedas();
+            });
+        }
 
         // Botão Resetar Skins
-        this.botaoResetSkins.addEventListener('click', () => {
-            this.resetarSkins();
-        });
+        if (this.botaoResetSkins) {
+            this.botaoResetSkins.addEventListener('click', () => {
+                this.resetarSkins();
+            });
+        }
 
         // Botão Resetar Tudo
-        this.botaoResetTudo.addEventListener('click', () => {
-            this.resetarTudo();
-        });
+        if (this.botaoResetTudo) {
+            this.botaoResetTudo.addEventListener('click', () => {
+                this.resetarTudo();
+            });
+        }
+
+        // NOVOS: Botões de controle de velocidade (com verificação de null)
+        if (this.botaoAumentarVelocidade) {
+            this.botaoAumentarVelocidade.addEventListener('click', () => {
+                this.aumentarVelocidade();
+            });
+        }
+
+        if (this.botaoDiminuirVelocidade) {
+            this.botaoDiminuirVelocidade.addEventListener('click', () => {
+                this.diminuirVelocidade();
+            });
+        }
+
+        if (this.botaoResetVelocidade) {
+            this.botaoResetVelocidade.addEventListener('click', () => {
+                this.resetarVelocidade();
+            });
+        }
+
+        this.atualizarIndicadorVelocidade();
+    }
+
+    // NOVOS MÉTODOS PARA CONTROLE DE VELOCIDADE
+    aumentarVelocidade() {
+        this.velocidadeGlobal = Math.min(2.0, this.velocidadeGlobal + 0.1); // Máximo 200%
+        this.aplicarVelocidadeGlobal();
+        this.atualizarIndicadorVelocidade();
+        this.mostrarMensagem(`Velocidade: ${Math.round(this.velocidadeGlobal * 100)}%`);
+    }
+
+    diminuirVelocidade() {
+        this.velocidadeGlobal = Math.max(0.5, this.velocidadeGlobal - 0.1); // Mínimo 50%
+        this.aplicarVelocidadeGlobal();
+        this.atualizarIndicadorVelocidade();
+        this.mostrarMensagem(`Velocidade: ${Math.round(this.velocidadeGlobal * 100)}%`);
+    }
+
+    resetarVelocidade() {
+        this.velocidadeGlobal = 1.0;
+        this.aplicarVelocidadeGlobal();
+        this.atualizarIndicadorVelocidade();
+        this.mostrarMensagem('Velocidade resetada para 100%');
+    }
+
+    aplicarVelocidadeGlobal() {
+        if (window.jogo) {
+            // Aplicar velocidade global em todos os sistemas
+            if (window.jogo.cenario1 && window.jogo.cenario2) {
+                const velocidadeBase1 = 0.07;
+                const velocidadeBase2 = 0.18;
+                
+                window.jogo.cenario1.setVelocidade(velocidadeBase1 * this.velocidadeGlobal);
+                window.jogo.cenario2.setVelocidade(velocidadeBase2 * this.velocidadeGlobal);
+            }
+
+            if (window.jogo.obstaculoController) {
+                const velocidadeBaseObstaculos = 0.18;
+                window.jogo.obstaculoController.atualizarVelocidade(velocidadeBaseObstaculos * this.velocidadeGlobal);
+            }
+
+            if (window.jogo.personagemController) {
+                window.jogo.personagemController.atualizarVelocidadeGlobal(this.velocidadeGlobal);
+            }
+
+            console.log(`🎯 Velocidade global aplicada: ${this.velocidadeGlobal.toFixed(2)}`);
+        }
+    }
+
+    atualizarIndicadorVelocidade() {
+        if (this.indicadorVelocidade) {
+            this.indicadorVelocidade.textContent = `${Math.round(this.velocidadeGlobal * 100)}%`;
+        }
     }
 
     mostrarMenuConfiguracoes() {
-        document.getElementById('menu-principal').style.display = 'none';
-        this.menuConfiguracoes.style.display = 'flex';
+        if (this.menuConfiguracoes) {
+            document.getElementById('menu-principal').style.display = 'none';
+            this.menuConfiguracoes.style.display = 'flex';
+            this.atualizarIndicadorVelocidade();
+        }
     }
 
     esconderMenuConfiguracoes() {
-        this.menuConfiguracoes.style.display = 'none';
+        if (this.menuConfiguracoes) {
+            this.menuConfiguracoes.style.display = 'none';
+        }
     }
 
     voltarParaMenuPrincipal() {
@@ -110,6 +208,7 @@ class ConfiguracaoController {
         if (confirm('⚠️ ATENÇÃO ⚠️\n\nTem certeza que deseja resetar TUDO?\nIsso irá:\n• Zerar todas as moedas\n• Resetar todas as skins compradas\n• Voltar para as configurações iniciais\n\nEsta ação NÃO pode ser desfeita!')) {
             this.moedaManager.resetarTudo();
             this.skinManager.resetarProgresso();
+            this.resetarVelocidade(); // NOVO: Resetar velocidade também
 
             if (window.jogo && window.jogo.menuController) {
                 window.jogo.menuController.atualizarContadorMoedasTotal();

@@ -31,17 +31,22 @@ class Jogo {
         this.cenario1.iniciarAnimacao();
         this.cenario2.iniciarAnimacao();
         
-        // NOVO: Ouvir mudanças de resolução e atualizar todos os sistemas
+        // CORRIGIDO: Verificar se o método existe antes de chamar
         window.addEventListener('resolutionChanged', (event) => {
             const fatorVelocidade = event.detail.fatorVelocidade;
             console.log(`🔄 Resolução alterada: ${event.detail.scale.toFixed(2)} | Fator: ${fatorVelocidade.toFixed(2)}`);
             
-            // Atualizar todos os sistemas
-            this.obstaculoController.atualizarTudoParaEscala(fatorVelocidade);
-            this.personagemController.atualizarFisicaParaEscala(fatorVelocidade);
+            // Atualizar todos os sistemas (com verificação de existência)
+            if (this.obstaculoController && typeof this.obstaculoController.atualizarTudoParaEscala === 'function') {
+                this.obstaculoController.atualizarTudoParaEscala(fatorVelocidade);
+            }
+            
+            if (this.personagemController && typeof this.personagemController.atualizarFisicaParaEscala === 'function') {
+                this.personagemController.atualizarFisicaParaEscala(fatorVelocidade);
+            }
             
             // Re-aplicar velocidade atual com o novo fator
-            if (this.jogoIniciado) {
+            if (this.jogoIniciado && this.obstaculoController) {
                 this.obstaculoController.atualizarVelocidade(this.obstaculoController.velocidadeBase);
             }
         });
