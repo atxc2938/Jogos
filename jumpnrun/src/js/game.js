@@ -62,17 +62,24 @@ class Jogo {
         this.personagem.style.opacity = '1';
         this.personagem.style.left = '250px';
         
+        // NOVO: Manter velocidade original do cenário (não aplicar velocidade global)
         this.cenario1.setVelocidadeSuave(this.velocidadeJogo1, 500);
         this.cenario2.setVelocidadeSuave(this.velocidadeJogo2, 500);
         
         this.configurarDificuldade(dificuldade);
         
-        this.obstaculoController.atualizarVelocidade(this.velocidadeJogo2);
+        // NOVO: Aplicar velocidade global nos obstáculos
+        const velocidadeGlobal = this.configuracaoController.getVelocidadeGlobal();
+        const velocidadeBaseComGlobal = this.obstaculoController.velocidadeBase * velocidadeGlobal;
+        this.obstaculoController.atualizarVelocidade(velocidadeBaseComGlobal);
+        
         this.obstaculoController.iniciar();
         
         this.iniciarAumentoVelocidade();
         this.personagemController.iniciarControles();
         this.timerController.iniciarTimer();
+        
+        console.log(`🎯 Jogo iniciado com velocidade: ${velocidadeGlobal.toFixed(2)}x`);
     }
 
     configurarDificuldade(dificuldade) {
@@ -125,9 +132,12 @@ class Jogo {
             this.cenario1.setVelocidadeSuave(novaVelocidade1, 1000);
             this.cenario2.setVelocidadeSuave(novaVelocidade2, 1000);
             
-            this.obstaculoController.atualizarVelocidade(novaVelocidade2);
+            // NOVO: Aplicar velocidade global no aumento de velocidade
+            const velocidadeGlobal = this.configuracaoController.getVelocidadeGlobal();
+            const novaVelocidadeObstaculos = novaVelocidade2 * velocidadeGlobal;
+            this.obstaculoController.atualizarVelocidade(novaVelocidadeObstaculos);
             
-            console.log(`📈 Velocidades aumentadas: ${novaVelocidade1.toFixed(3)} / ${novaVelocidade2.toFixed(3)}`);
+            console.log(`📈 Velocidades aumentadas: ${novaVelocidade1.toFixed(3)} / ${novaVelocidade2.toFixed(3)} / Obstáculos: ${novaVelocidadeObstaculos.toFixed(3)}`);
         }, 60000);
     }
 

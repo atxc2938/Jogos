@@ -16,8 +16,20 @@ class ConfiguracaoController {
         this.botaoResetVelocidade = document.getElementById('botao-reset-velocidade');
         this.indicadorVelocidade = document.getElementById('indicador-velocidade');
         
-        this.velocidadeGlobal = 1.0; // Fator de velocidade global (1.0 = normal)
+        // NOVO: Carregar velocidade salva
+        this.velocidadeGlobal = this.carregarVelocidadeSalva();
         this.init();
+    }
+
+    // NOVO: Método para carregar velocidade salva
+    carregarVelocidadeSalva() {
+        const velocidadeSalva = localStorage.getItem('velocidadeGlobal');
+        return velocidadeSalva ? parseFloat(velocidadeSalva) : 1.0;
+    }
+
+    // NOVO: Método para salvar velocidade
+    salvarVelocidade() {
+        localStorage.setItem('velocidadeGlobal', this.velocidadeGlobal.toString());
     }
 
     init() {
@@ -83,11 +95,15 @@ class ConfiguracaoController {
         }
 
         this.atualizarIndicadorVelocidade();
+        
+        // NOVO: Aplicar velocidade salva ao iniciar
+        this.aplicarVelocidadeGlobal();
     }
 
     // NOVOS MÉTODOS PARA CONTROLE DE VELOCIDADE
     aumentarVelocidade() {
         this.velocidadeGlobal = Math.min(2.0, this.velocidadeGlobal + 0.1); // Máximo 200%
+        this.salvarVelocidade(); // NOVO: Salvar velocidade
         this.aplicarVelocidadeGlobal();
         this.atualizarIndicadorVelocidade();
         this.mostrarMensagem(`Velocidade: ${Math.round(this.velocidadeGlobal * 100)}%`);
@@ -95,6 +111,7 @@ class ConfiguracaoController {
 
     diminuirVelocidade() {
         this.velocidadeGlobal = Math.max(0.5, this.velocidadeGlobal - 0.1); // Mínimo 50%
+        this.salvarVelocidade(); // NOVO: Salvar velocidade
         this.aplicarVelocidadeGlobal();
         this.atualizarIndicadorVelocidade();
         this.mostrarMensagem(`Velocidade: ${Math.round(this.velocidadeGlobal * 100)}%`);
@@ -102,6 +119,7 @@ class ConfiguracaoController {
 
     resetarVelocidade() {
         this.velocidadeGlobal = 1.0;
+        this.salvarVelocidade(); // NOVO: Salvar velocidade
         this.aplicarVelocidadeGlobal();
         this.atualizarIndicadorVelocidade();
         this.mostrarMensagem('Velocidade resetada para 100%');
@@ -109,15 +127,7 @@ class ConfiguracaoController {
 
     aplicarVelocidadeGlobal() {
         if (window.jogo) {
-            // Aplicar velocidade global em todos os sistemas
-            if (window.jogo.cenario1 && window.jogo.cenario2) {
-                const velocidadeBase1 = 0.07;
-                const velocidadeBase2 = 0.18;
-                
-                window.jogo.cenario1.setVelocidade(velocidadeBase1 * this.velocidadeGlobal);
-                window.jogo.cenario2.setVelocidade(velocidadeBase2 * this.velocidadeGlobal);
-            }
-
+            // Aplicar velocidade global em todos os sistemas (EXCETO CENÁRIO)
             if (window.jogo.obstaculoController) {
                 const velocidadeBaseObstaculos = 0.18;
                 window.jogo.obstaculoController.atualizarVelocidade(velocidadeBaseObstaculos * this.velocidadeGlobal);
@@ -127,8 +137,18 @@ class ConfiguracaoController {
                 window.jogo.personagemController.atualizarVelocidadeGlobal(this.velocidadeGlobal);
             }
 
+            // NOVO: Aplicar também no timer se estiver ativo
+            if (window.jogo.timerController && window.jogo.timerController.timerAtivo) {
+                window.jogo.timerController.aplicarFatorVelocidade(this.velocidadeGlobal);
+            }
+
             console.log(`🎯 Velocidade global aplicada: ${this.velocidadeGlobal.toFixed(2)}`);
         }
+    }
+
+    // NOVO: Método para obter velocidade global
+    getVelocidadeGlobal() {
+        return this.velocidadeGlobal;
     }
 
     atualizarIndicadorVelocidade() {

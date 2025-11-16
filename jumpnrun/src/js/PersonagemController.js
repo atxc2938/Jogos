@@ -28,20 +28,14 @@ class PersonagemController {
         this.fatorVelocidadeGlobal = 1.0;
     }
 
-    // NOVO: Método para atualizar velocidade global (CORRIGIDO)
+    // NOVO: Método para atualizar velocidade global (CORRIGIDO - agora afeta velocidade, não altura)
     atualizarVelocidadeGlobal(novoFator) {
         this.fatorVelocidadeGlobal = novoFator;
-        // Ajustar apenas a velocidade do pulo, mantendo a gravidade constante
-        this.velocidadePulo = this.velocidadePuloBase * Math.sqrt(novoFator);
-        console.log(`🎯 Personagem: VelPulo=${this.velocidadePulo.toFixed(2)}, FatorGlobal=${novoFator.toFixed(2)}`);
-    }
-
-    // NOVO: Método para atualizar física para escala
-    atualizarFisicaParaEscala(fatorVelocidade) {
-        this.gravidade = this.gravidadeBase * fatorVelocidade;
-        this.velocidadePulo = this.velocidadePuloBase * fatorVelocidade;
-        
-        console.log(`🎯 Personagem ajustado: Pulo=${this.velocidadePulo.toFixed(2)}, Grav=${this.gravidade.toFixed(2)}`);
+        // Ajustar velocidade do pulo linearmente (não altura)
+        this.velocidadePulo = this.velocidadePuloBase * novoFator;
+        // Ajustar gravidade para manter a mesma altura de pulo
+        this.gravidade = this.gravidadeBase * novoFator;
+        console.log(`🎯 Personagem: VelPulo=${this.velocidadePulo.toFixed(2)}, Grav=${this.gravidade.toFixed(2)}, Fator=${novoFator.toFixed(2)}`);
     }
 
     iniciarControles() {
@@ -82,7 +76,7 @@ class PersonagemController {
             this.pulando = true;
             this.podePular = false;
             
-            // Usar velocidade ajustada (já corrigida)
+            // Usar velocidade ajustada
             this.velocidadeY = this.velocidadePulo;
             this.rotacaoAlvo = this.rotacaoAlvo + 90;
             this.tempoRotacao = 0;
@@ -149,7 +143,7 @@ class PersonagemController {
         }
 
         if (!this.estaNoChao && !colidindoComPlataforma) {
-            // Manter gravidade constante (não afetada pela velocidade global)
+            // Usar gravidade ajustada
             this.velocidadeY -= this.gravidade;
             bottomAtual += this.velocidadeY;
             this.tempoForaDaPlataforma += 16;
