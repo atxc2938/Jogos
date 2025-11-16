@@ -10,72 +10,61 @@ class ConfiguracaoController {
         this.moedaManager = new MoedaManager();
         this.skinManager = new SkinManager();
         
-        // NOVOS BOTÕES DE VELOCIDADE (com verificação de null)
         this.botaoAumentarVelocidade = document.getElementById('botao-aumentar-velocidade');
         this.botaoDiminuirVelocidade = document.getElementById('botao-diminuir-velocidade');
         this.botaoResetVelocidade = document.getElementById('botao-reset-velocidade');
         this.indicadorVelocidade = document.getElementById('indicador-velocidade');
         
-        // NOVO: Carregar velocidade salva
         this.velocidadeGlobal = this.carregarVelocidadeSalva();
         this.init();
     }
 
-    // NOVO: Método para carregar velocidade salva
     carregarVelocidadeSalva() {
         const velocidadeSalva = localStorage.getItem('velocidadeGlobal');
         return velocidadeSalva ? parseFloat(velocidadeSalva) : 1.0;
     }
 
-    // NOVO: Método para salvar velocidade
     salvarVelocidade() {
         localStorage.setItem('velocidadeGlobal', this.velocidadeGlobal.toString());
     }
 
     init() {
-        // Botão Configurações no menu principal
         if (this.configButton) {
             this.configButton.addEventListener('click', () => {
                 this.mostrarMenuConfiguracoes();
             });
         }
 
-        // Botão Voltar
         if (this.botaoVoltarConfig) {
             this.botaoVoltarConfig.addEventListener('click', () => {
                 this.voltarParaMenuPrincipal();
             });
         }
 
-        // Botão Adicionar Moedas
         if (this.botaoAddMoedas) {
             this.botaoAddMoedas.addEventListener('click', () => {
                 this.adicionarMoedas(10);
             });
         }
 
-        // Botão Resetar Moedas
         if (this.botaoResetMoedas) {
             this.botaoResetMoedas.addEventListener('click', () => {
                 this.resetarMoedas();
             });
         }
 
-        // Botão Resetar Skins
         if (this.botaoResetSkins) {
             this.botaoResetSkins.addEventListener('click', () => {
                 this.resetarSkins();
             });
         }
 
-        // Botão Resetar Tudo
         if (this.botaoResetTudo) {
             this.botaoResetTudo.addEventListener('click', () => {
                 this.resetarTudo();
             });
         }
 
-        // NOVOS: Botões de controle de velocidade (com verificação de null)
         if (this.botaoAumentarVelocidade) {
             this.botaoAumentarVelocidade.addEventListener('click', () => {
                 this.aumentarVelocidade();
@@ -95,23 +84,20 @@ class ConfiguracaoController {
         }
 
         this.atualizarIndicadorVelocidade();
-        
-        // NOVO: Aplicar velocidade salva ao iniciar
         this.aplicarVelocidadeGlobal();
     }
 
-    // NOVOS MÉTODOS PARA CONTROLE DE VELOCIDADE
     aumentarVelocidade() {
-        this.velocidadeGlobal = Math.min(2.0, this.velocidadeGlobal + 0.1); // Máximo 200%
-        this.salvarVelocidade(); // NOVO: Salvar velocidade
+        this.velocidadeGlobal = Math.min(10.0, this.velocidadeGlobal + 0.1);
+        this.salvarVelocidade();
         this.aplicarVelocidadeGlobal();
         this.atualizarIndicadorVelocidade();
         this.mostrarMensagem(`Velocidade: ${Math.round(this.velocidadeGlobal * 100)}%`);
     }
 
     diminuirVelocidade() {
-        this.velocidadeGlobal = Math.max(0.5, this.velocidadeGlobal - 0.1); // Mínimo 50%
-        this.salvarVelocidade(); // NOVO: Salvar velocidade
+        this.velocidadeGlobal = Math.max(0.5, this.velocidadeGlobal - 0.1);
+        this.salvarVelocidade();
         this.aplicarVelocidadeGlobal();
         this.atualizarIndicadorVelocidade();
         this.mostrarMensagem(`Velocidade: ${Math.round(this.velocidadeGlobal * 100)}%`);
@@ -119,7 +105,7 @@ class ConfiguracaoController {
 
     resetarVelocidade() {
         this.velocidadeGlobal = 1.0;
-        this.salvarVelocidade(); // NOVO: Salvar velocidade
+        this.salvarVelocidade();
         this.aplicarVelocidadeGlobal();
         this.atualizarIndicadorVelocidade();
         this.mostrarMensagem('Velocidade resetada para 100%');
@@ -127,7 +113,6 @@ class ConfiguracaoController {
 
     aplicarVelocidadeGlobal() {
         if (window.jogo) {
-            // Aplicar velocidade global em todos os sistemas (EXCETO CENÁRIO)
             if (window.jogo.obstaculoController) {
                 const velocidadeBaseObstaculos = 0.18;
                 window.jogo.obstaculoController.atualizarVelocidade(velocidadeBaseObstaculos * this.velocidadeGlobal);
@@ -137,16 +122,12 @@ class ConfiguracaoController {
                 window.jogo.personagemController.atualizarVelocidadeGlobal(this.velocidadeGlobal);
             }
 
-            // NOVO: Aplicar também no timer se estiver ativo
             if (window.jogo.timerController && window.jogo.timerController.timerAtivo) {
                 window.jogo.timerController.aplicarFatorVelocidade(this.velocidadeGlobal);
             }
-
-            console.log(`🎯 Velocidade global aplicada: ${this.velocidadeGlobal.toFixed(2)}`);
         }
     }
 
-    // NOVO: Método para obter velocidade global
     getVelocidadeGlobal() {
         return this.velocidadeGlobal;
     }
@@ -181,12 +162,10 @@ class ConfiguracaoController {
             this.moedaManager.adicionarMoeda();
         }
         
-
         if (window.jogo && window.jogo.menuController) {
             window.jogo.menuController.atualizarContadorMoedasTotal();
         }
         
-
         const evento = new CustomEvent('moedasAtualizadas', {
             detail: { moedasTotais: this.moedaManager.getMoedasTotais() }
         });
@@ -228,7 +207,7 @@ class ConfiguracaoController {
         if (confirm('⚠️ ATENÇÃO ⚠️\n\nTem certeza que deseja resetar TUDO?\nIsso irá:\n• Zerar todas as moedas\n• Resetar todas as skins compradas\n• Voltar para as configurações iniciais\n\nEsta ação NÃO pode ser desfeita!')) {
             this.moedaManager.resetarTudo();
             this.skinManager.resetarProgresso();
-            this.resetarVelocidade(); // NOVO: Resetar velocidade também
+            this.resetarVelocidade();
 
             if (window.jogo && window.jogo.menuController) {
                 window.jogo.menuController.atualizarContadorMoedasTotal();

@@ -562,14 +562,6 @@ class ObstaculoController {
         this.obstaculos.forEach(obstaculo => {
             obstaculo.velocidade = this.velocidadeBase;
         });
-
-        console.log(`🎯 Velocidade obstáculos atualizada: ${novaVelocidade.toFixed(3)}`);
-    }
-
-    // NOVO MÉTODO ADICIONADO PARA CORRIGIR O ERRO
-    atualizarTudoParaEscala(fatorVelocidade) {
-        this.geradorObstaculos.atualizarTudoParaEscala(fatorVelocidade);
-        console.log(`🎯 ObstaculoController ajustado para escala: ${fatorVelocidade.toFixed(2)}`);
     }
 
     configurarHitbox(tipo, configuracao) {

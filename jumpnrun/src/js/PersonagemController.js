@@ -24,18 +24,14 @@ class PersonagemController {
         this.ultimaPlataforma = null;
         this.tempoForaDaPlataforma = 0;
         
-        // NOVO: Fator de velocidade global
         this.fatorVelocidadeGlobal = 1.0;
+        this.ultimoTempo = 0;
     }
 
-    // NOVO: Método para atualizar velocidade global (CORRIGIDO - agora afeta velocidade, não altura)
     atualizarVelocidadeGlobal(novoFator) {
         this.fatorVelocidadeGlobal = novoFator;
-        // Ajustar velocidade do pulo linearmente (não altura)
         this.velocidadePulo = this.velocidadePuloBase * novoFator;
-        // Ajustar gravidade para manter a mesma altura de pulo
-        this.gravidade = this.gravidadeBase * novoFator;
-        console.log(`🎯 Personagem: VelPulo=${this.velocidadePulo.toFixed(2)}, Grav=${this.gravidade.toFixed(2)}, Fator=${novoFator.toFixed(2)}`);
+        this.gravidade = this.gravidadeBase * novoFator * novoFator;
     }
 
     iniciarControles() {
@@ -76,19 +72,18 @@ class PersonagemController {
             this.pulando = true;
             this.podePular = false;
             
-            // Usar velocidade ajustada
             this.velocidadeY = this.velocidadePulo;
             this.rotacaoAlvo = this.rotacaoAlvo + 90;
             this.tempoRotacao = 0;
             
             setTimeout(() => {
                 this.podePular = true;
-            }, 200);
+            }, 200 / this.fatorVelocidadeGlobal);
         }
     }
 
     iniciarLoopAnimacao() {
-        let ultimoTempo = performance.now();
+        this.ultimoTempo = performance.now();
         
         const animar = (tempoAtual) => {
             if (window.jogo && window.jogo.menuController && 
@@ -97,17 +92,17 @@ class PersonagemController {
                 return;
             }
             
-            const deltaTime = tempoAtual - ultimoTempo;
-            ultimoTempo = tempoAtual;
+            const deltaTime = tempoAtual - this.ultimoTempo;
+            this.ultimoTempo = tempoAtual;
             
-            this.atualizarFisica();
+            this.atualizarFisica(deltaTime);
             this.atualizarRotacao(deltaTime);
             this.emitirPoeira();
             this.verificarSaidaTela();
             this.animacaoId = requestAnimationFrame(animar);
         };
         
-        ultimoTempo = performance.now();
+        this.ultimoTempo = performance.now();
         this.animacaoId = requestAnimationFrame(animar);
     }
 
@@ -120,7 +115,7 @@ class PersonagemController {
         }
     }
 
-    atualizarFisica() {
+    atualizarFisica(deltaTime) {
         const personagemX = parseInt(this.personagem.style.left) || 250;
         let bottomAtual = parseInt(this.personagem.style.bottom) || this.alturaChao;
         const personagemWidth = 83;
@@ -143,7 +138,6 @@ class PersonagemController {
         }
 
         if (!this.estaNoChao && !colidindoComPlataforma) {
-            // Usar gravidade ajustada
             this.velocidadeY -= this.gravidade;
             bottomAtual += this.velocidadeY;
             this.tempoForaDaPlataforma += 16;
@@ -183,7 +177,7 @@ class PersonagemController {
         if (this.pulando && this.rotacao < this.rotacaoAlvo) {
             this.tempoRotacao += deltaTime;
             
-            const progresso = Math.min(this.tempoRotacao / this.duracaoRotacao, 1);
+            const progresso = Math.min(this.tempoRotacao / (this.duracaoRotacao / this.fatorVelocidadeGlobal), 1);
             const progressoSuavizado = 1 - Math.pow(1 - progresso, 3);
             
             this.rotacao = this.rotacaoAlvo - 90 + (90 * progressoSuavizado);
@@ -257,5 +251,8 @@ class PersonagemController {
         this.podePular = true;
         this.personagem.style.transform = 'rotate(0deg)';
         this.personagem.style.bottom = this.alturaChao + 'px';
+        this.fatorVelocidadeGlobal = 1.0;
+        this.velocidadePulo = 18;
+        this.gravidade = 0.6;
     }
 }

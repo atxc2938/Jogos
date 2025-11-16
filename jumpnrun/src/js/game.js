@@ -27,26 +27,13 @@ class Jogo {
     }
 
     init() {
-        console.log('Jogo Jump N Run inicializado');
         this.cenario1.iniciarAnimacao();
         this.cenario2.iniciarAnimacao();
         
-        // CORRIGIDO: Verificar se o método existe antes de chamar
         window.addEventListener('resolutionChanged', (event) => {
             const fatorVelocidade = event.detail.fatorVelocidade;
-            console.log(`🔄 Resolução alterada: ${event.detail.scale.toFixed(2)} | Fator: ${fatorVelocidade.toFixed(2)}`);
             
-            // Atualizar todos os sistemas (com verificação de existência)
-            if (this.obstaculoController && typeof this.obstaculoController.atualizarTudoParaEscala === 'function') {
-                this.obstaculoController.atualizarTudoParaEscala(fatorVelocidade);
-            }
-            
-            if (this.personagemController && typeof this.personagemController.atualizarFisicaParaEscala === 'function') {
-                this.personagemController.atualizarFisicaParaEscala(fatorVelocidade);
-            }
-            
-            // Re-aplicar velocidade atual com o novo fator
-            if (this.jogoIniciado && this.obstaculoController) {
+            if (this.obstaculoController) {
                 this.obstaculoController.atualizarVelocidade(this.obstaculoController.velocidadeBase);
             }
         });
@@ -62,13 +49,11 @@ class Jogo {
         this.personagem.style.opacity = '1';
         this.personagem.style.left = '250px';
         
-        // NOVO: Manter velocidade original do cenário (não aplicar velocidade global)
         this.cenario1.setVelocidadeSuave(this.velocidadeJogo1, 500);
         this.cenario2.setVelocidadeSuave(this.velocidadeJogo2, 500);
         
         this.configurarDificuldade(dificuldade);
         
-        // NOVO: Aplicar velocidade global nos obstáculos
         const velocidadeGlobal = this.configuracaoController.getVelocidadeGlobal();
         const velocidadeBaseComGlobal = this.obstaculoController.velocidadeBase * velocidadeGlobal;
         this.obstaculoController.atualizarVelocidade(velocidadeBaseComGlobal);
@@ -78,8 +63,6 @@ class Jogo {
         this.iniciarAumentoVelocidade();
         this.personagemController.iniciarControles();
         this.timerController.iniciarTimer();
-        
-        console.log(`🎯 Jogo iniciado com velocidade: ${velocidadeGlobal.toFixed(2)}x`);
     }
 
     configurarDificuldade(dificuldade) {
@@ -105,8 +88,6 @@ class Jogo {
                 this.obstaculoController.velocidadeBase = 0.18;
                 break;
         }
-        
-        console.log(`🎯 Dificuldade ${dificuldade}: VelBase=${this.obstaculoController.velocidadeBase.toFixed(3)}`);
     }
 
     reiniciarParaMenu() {
@@ -132,12 +113,9 @@ class Jogo {
             this.cenario1.setVelocidadeSuave(novaVelocidade1, 1000);
             this.cenario2.setVelocidadeSuave(novaVelocidade2, 1000);
             
-            // NOVO: Aplicar velocidade global no aumento de velocidade
             const velocidadeGlobal = this.configuracaoController.getVelocidadeGlobal();
             const novaVelocidadeObstaculos = novaVelocidade2 * velocidadeGlobal;
             this.obstaculoController.atualizarVelocidade(novaVelocidadeObstaculos);
-            
-            console.log(`📈 Velocidades aumentadas: ${novaVelocidade1.toFixed(3)} / ${novaVelocidade2.toFixed(3)} / Obstáculos: ${novaVelocidadeObstaculos.toFixed(3)}`);
         }, 60000);
     }
 
@@ -151,5 +129,4 @@ class Jogo {
 
 document.addEventListener('DOMContentLoaded', () => {
     window.jogo = new Jogo();
-    console.log('Jogo inicializado com sucesso');
 });

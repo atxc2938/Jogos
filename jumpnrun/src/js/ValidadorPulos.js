@@ -1,6 +1,6 @@
 class ValidadorPulos {
     constructor() {
-        this.velocidadeAtual = 0.18;
+        this.velocidadeBaseObstaculos = 0.18;
         this.velocidadePuloBase = 18;
         this.gravidadeBase = 0.6;
         this.velocidadePulo = this.velocidadePuloBase;
@@ -8,22 +8,19 @@ class ValidadorPulos {
         this.margemSeguranca = 1.3;
         this.alturaMaximaPulo = this.calcularAlturaMaximaPulo();
         this.distanciaMaximaPulo = this.calcularDistanciaMaximaPulo();
-        this.fatorFisica = 1; // NOVO: Fator para ajuste de escala
+        this.fatorFisica = 1;
     }
 
     atualizarVelocidade(novaVelocidade) {
-        this.velocidadeAtual = novaVelocidade;
+        // Não atualizamos mais a velocidade base para cálculos
         this.distanciaMaximaPulo = this.calcularDistanciaMaximaPulo();
     }
 
-    // NOVO MÉTODO: Atualizar física para escala
     atualizarFisicaParaEscala(fatorVelocidade) {
         this.fatorFisica = fatorVelocidade;
         this.velocidadePulo = this.velocidadePuloBase * fatorVelocidade;
-        this.gravidade = this.gravidadeBase * fatorVelocidade;
+        this.gravidade = this.gravidadeBase * fatorVelocidade * fatorVelocidade;
         this.distanciaMaximaPulo = this.calcularDistanciaMaximaPulo();
-        
-        console.log(`🎯 Validador ajustado: Pulo=${this.velocidadePulo.toFixed(2)}, Grav=${this.gravidade.toFixed(2)}`);
     }
 
     calcularAlturaMaximaPulo() {
@@ -32,7 +29,8 @@ class ValidadorPulos {
 
     calcularDistanciaMaximaPulo() {
         const tempoPulo = (2 * this.velocidadePulo) / this.gravidade;
-        const distanciaPulo = (this.velocidadeAtual * 1920 / 100) * tempoPulo;
+        // Usamos a velocidade BASE dos obstáculos, não a velocidade atual escalada
+        const distanciaPulo = (this.velocidadeBaseObstaculos * 1920 / 100) * tempoPulo;
         return distanciaPulo * this.margemSeguranca;
     }
 
@@ -153,13 +151,13 @@ class ValidadorPulos {
 
     calcularDistanciaParaAltura(altura) {
         const tempoSubida = Math.sqrt(2 * altura / this.gravidade);
-        const distancia = (this.velocidadeAtual * 1920 / 100) * tempoSubida * 2;
+        const distancia = (this.velocidadeBaseObstaculos * 1920 / 100) * tempoSubida * 2;
         return distancia * 0.9;
     }
 
     calcularEspacamentoPlataformas() {
         const tempoPulo = (2 * this.velocidadePulo) / this.gravidade;
-        const distanciaPulo = (this.velocidadeAtual * 1920 / 100) * tempoPulo;
+        const distanciaPulo = (this.velocidadeBaseObstaculos * 1920 / 100) * tempoPulo;
         
         const espacamentoMinimo = distanciaPulo * this.margemSeguranca;
         
@@ -168,7 +166,7 @@ class ValidadorPulos {
 
     calcularEspacamentoMinimoEspinhos() {
         const tempoPulo = (2 * this.velocidadePulo) / this.gravidade;
-        const distanciaPulo = (this.velocidadeAtual * 1920 / 100) * tempoPulo;
+        const distanciaPulo = (this.velocidadeBaseObstaculos * 1920 / 100) * tempoPulo;
         
         let fatorDificuldade;
         switch(window.jogo?.dificuldadeAtual) {

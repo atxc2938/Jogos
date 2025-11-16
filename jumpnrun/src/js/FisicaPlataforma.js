@@ -31,8 +31,8 @@ class FisicaPlataforma {
         
         const estaDentroDaPlataformaVertical = personagemBase <= plataformaTopo && personagemBase >= plataformaY;
     
-        const colisaoHorizontal = personagemX + personagemWidth > plataformaX + 10 &&  // Margem esquerda
-                                 personagemX < plataformaX + plataformaWidth - 10;    // Margem direita
+        const colisaoHorizontal = personagemX + personagemWidth > plataformaX + 10 && 
+                                 personagemX < plataformaX + plataformaWidth - 10;
         
         const personagemController = window.jogo?.personagemController;
         const estaCaindo = personagemController ? personagemController.velocidadeY <= 2 : true;
